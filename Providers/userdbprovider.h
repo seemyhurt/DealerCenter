@@ -5,7 +5,7 @@
 
 struct UserData;
 /**
- * @brief Провайдер БД машин.
+ * @brief Провайдер БД пользователей.
  */
 class UserDBProvider
     : public DatabaseCommon::LocalDBProviderBase
@@ -20,8 +20,8 @@ public:
     explicit UserDBProvider(QObject* parent = nullptr);
 
     /**
-     * @brief Метод доступа к машинам БД.
-     * @return Массив машин.
+     * @brief Метод доступа к пользователям из БД.
+     * @return Массив пользователей.
      */
     QVector<UserData> getUsers();
 

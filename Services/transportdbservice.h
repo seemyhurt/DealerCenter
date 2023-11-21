@@ -2,9 +2,9 @@
 #define TRANSPORTDBSERVICE_H
 
 #include "ilocaldbservicebase.h"
-#include "localbbstorage.h"
+#include "../Providers/localbbstorage.h"
 #include <QSharedPointer>
-#include "transportdata.h"
+#include "../Common/transportdata.h"
 
 class TransportDBProvider;
 

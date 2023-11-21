@@ -1,7 +1,7 @@
 #include "transportdbservice.h"
 #include <QDebug>
-#include "TransportDBProvider.h"
-#include "localbbstorage.h"
+#include "../Providers/transportdbprovider.h"
+#include "../Providers/localbbstorage.h"
 
 TransportDBService::TransportDBService(QObject *parent) :
     ILocalDBServiceBase(parent),

@@ -1,6 +1,6 @@
 #include "administratorwidget.h"
-#include "servicelocator.h"
-#include "userdbservice.h"
+#include "../Services/servicelocator.h"
+#include "../Services/userdbservice.h"
 
 #include <QTabWidget>
 #include <QLabel>

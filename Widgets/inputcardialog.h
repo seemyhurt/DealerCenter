@@ -1,7 +1,7 @@
 #ifndef INPUTCARDIALOG_H
 #define INPUTCARDIALOG_H
 
-#include "transportdata.h"
+#include "../Common/transportdata.h"
 #include "iinputdialogbase.h"
 #include <QVariantMap>
 

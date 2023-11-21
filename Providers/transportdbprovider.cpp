@@ -1,7 +1,7 @@
 #include "transportdbprovider.h"
-#include "transportdata.h"
-#include "servicelocator.h"
-#include "coreservice.h"
+#include "../Common/transportdata.h"
+#include "../Services/servicelocator.h"
+#include "../Services/coreservice.h"
 
 TransportDBProvider::TransportDBProvider(QObject* parent) :
     LocalDBProviderBase{parent}

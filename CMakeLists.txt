@@ -9,58 +9,70 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Sql)
+find_package(QT NAMES Qt5 REQUIRED COMPONENTS Widgets Sql)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
 
 set(PROJECT_SOURCES
-    appmenu.cpp
+    Widgets/appmenu.cpp
+    Widgets/inputcardialog.cpp
+    Widgets/customerwidget.cpp
+    Widgets/administratorwidget.cpp
+    Widgets/inputuserdialog.cpp
+    Widgets/iinputdialogbase.cpp
+    Widgets/inputnumberdialog.cpp
+    Widgets/mainwidget.cpp
 
-    TransportDBProvider.cpp
-    transportdbservice.cpp
-    customerwidget.cpp
+    Providers/transportdbprovider.cpp
+    Providers/localdbproviderbase.cpp
+    Providers/userdbprovider.cpp
+    Providers/manufacturerdbprovider.cpp
+
+    Services/transportdbservice.cpp
+    Services/servicelocator.cpp
+    Services/coreservice.cpp
+    Services/userdbservice.cpp
+    Services/ilocaldbservicebase.cpp
+    Services/manufacturerdbservice.cpp
+
     iinputvalidator.cpp
-    ilocaldbservicebase.cpp
-    inputcardialog.cpp
-
     main.cpp
-    localdbproviderbase.cpp
-    mainwidget.cpp
-    servicelocator.cpp
 )
 
 set(PROJECT_HEADERS
-    appmenu.h
+    Widgets/appmenu.h
+    Widgets/customerwidget.h
+    Widgets/inputcardialog.h
+    Widgets/inputnumberdialog.h
+    Widgets/administratorwidget.h
+    Widgets/inputuserdialog.h
+    Widgets/iinputdialogbase.h
+    Widgets/mainwidget.h
 
-    TransportDBProvider.h
-    transportdbservice.h
-    customerwidget.h
+    Providers/transportdbprovider.h
+    Providers/iprovider.h
+    Providers/localbbstorage.h
+    Providers/localdbproviderbase.h
+    Providers/userdbprovider.h
+    Providers/manufacturerdbprovider.h
+
+    Services/ilocaldbservicebase.h
+    Services/transportdbservice.h
+    Services/iservice.h
+    Services/servicelocator.h
+    Services/userdbservice.h
+    Services/coreservice.h
+    Services/manufacturerdbservice.h
+
+    Common/userdata.h
+    Common/transportdata.h
+    Common/manufacturerdata.h
+
     iinputvalidator.h
-    ilocaldbservicebase.h
-    inputcardialog.h
-    iprovider.h
-    iservice.h
-
-    localbbstorage.h
-    localdbproviderbase.h
-    mainwidget.h
-    servicelocator.h
-    userdata.h
 )
 
 add_executable(DilerCenter
     ${PROJECT_HEADERS}
     ${PROJECT_SOURCES}
-    userdbprovider.h userdbprovider.cpp
-
-    iinputdialogbase.h iinputdialogbase.cpp
-    transportdata.h
-    UserData.h
-    inputuserdialog.h inputuserdialog.cpp
-    userdbservice.h userdbservice.cpp
-    inputnumberdialog.h inputnumberdialog.cpp
-    coreservice.h coreservice.cpp
-    administratorwidget.h administratorwidget.cpp
-
 )
 
 target_link_libraries(DilerCenter PRIVATE Qt${QT_VERSION_MAJOR}::Widgets

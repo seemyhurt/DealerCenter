@@ -1,9 +1,9 @@
-#include "mainwidget.h"
+#include "Widgets/mainwidget.h"
 #include <QApplication>
-#include "coreservice.h"
-#include "servicelocator.h"
-#include "transportdbservice.h"
-#include "userdbservice.h"
+#include "Services/coreservice.h"
+#include "Services/servicelocator.h"
+#include "Services/transportdbservice.h"
+#include "Services/userdbservice.h"
 
 void initServices();
 

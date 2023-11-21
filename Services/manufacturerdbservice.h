@@ -1,18 +1,18 @@
-#ifndef USERDBSERVICE_H
-#define USERDBSERVICE_H
+#ifndef MANUFACTURERDBSERVICE_H
+#define MANUFACTURERDBSERVICE_H
 
 #include "ilocaldbservicebase.h"
-#include "localbbstorage.h"
+#include "../Providers/localbbstorage.h"
 #include <QSharedPointer>
-#include "userdata.h"
 
-class UserDBProvider;
+struct ManufacturerData;
+class ManufacturerDBProvider;
 
-class UserDBService : public DatabaseCommon::ILocalDBServiceBase
+class ManufacturerDBService : public DatabaseCommon::ILocalDBServiceBase
 {
     Q_OBJECT
 public:
-    explicit UserDBService(QObject *parent = nullptr);
+    explicit ManufacturerDBService(QObject *parent = nullptr);
 
     // ILocalDBServiceBase interface
     quint64 tableSize() const override;
@@ -25,15 +25,6 @@ public:
      */
     static QString baseKey();
 
-    QVariantList getAllUsers();
-
-signals:
-    void userAdded(const UserData & data);
-
-public:
-    bool isUserExist(quint64 number);
-    bool isPasswordCorrect(quint64 number, const QString & password);
-
 protected slots:
     /**
      * @brief Реализация изменения статуса БД.
@@ -45,10 +36,8 @@ private:
     void selectDataFromStorage();
 
 private:
-    DatabaseCommon::LocalDBStorage<UserData> _storage;
-    QSharedPointer<UserDBProvider> _provider;
-    QHash<quint64, UserData> _phoneToUser;
-
+    DatabaseCommon::LocalDBStorage<ManufacturerData> _storage;
+    QSharedPointer<ManufacturerDBProvider> _provider;
 };
 
-#endif // USERDBSERVICE_H
+#endif // MANUFACTURERDBSERVICE_H

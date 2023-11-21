@@ -1,8 +1,7 @@
 #include "userdbprovider.h"
-#include <QCoreApplication>
-#include "UserData.h"
-#include "servicelocator.h"
-#include "coreservice.h"
+#include "../Common/userdata.h"
+#include "../Services/servicelocator.h"
+#include "../Services/coreservice.h"
 
 UserDBProvider::UserDBProvider(QObject* parent) :
     LocalDBProviderBase{parent}
