@@ -21,6 +21,7 @@ set(PROJECT_SOURCES
     Widgets/iinputdialogbase.cpp
     Widgets/inputnumberdialog.cpp
     Widgets/mainwidget.cpp
+    Widgets/inputmanufacturerdialog.cpp
 
     Providers/transportdbprovider.cpp
     Providers/localdbproviderbase.cpp
@@ -47,6 +48,7 @@ set(PROJECT_HEADERS
     Widgets/inputuserdialog.h
     Widgets/iinputdialogbase.h
     Widgets/mainwidget.h
+    Widgets/inputmanufacturerdialog.h
 
     Providers/transportdbprovider.h
     Providers/iprovider.h

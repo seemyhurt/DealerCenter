@@ -39,15 +39,26 @@ struct ManufacturerData
         return temp;
     }
 
-    QVariantMap toWigdetMap() const
+    QVariantMap toWidgetMap() const
     {
         return QVariantMap {
-            {"id", id},
+            {"ID", id},
             {"Name", name},
             {"Delivery time", deliveryTime},
             {"Guarantee period", guaranteePeriod},
             {"Car brand", carBrand}
         };
+    }
+
+    static ManufacturerData fromWidgetMap(const QVariantMap &variant)
+    {
+        ManufacturerData temp;
+        temp.id = variant.value("ID", 0).toInt();
+        temp.name = variant.value("Name").toString();
+        temp.deliveryTime = variant.value("Delivery time").toInt();
+        temp.guaranteePeriod = variant.value("Guarantee period").toInt();
+        temp.carBrand = variant.value("Car brand").toString();
+        return temp;
     }
 };
 

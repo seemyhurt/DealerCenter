@@ -47,7 +47,7 @@ struct UserData
         return temp;
     }
 
-    QVariantMap toWigdetMap() const
+    QVariantMap toWidgetMap() const
     {
         return QVariantMap {
             {"ID", id},
@@ -59,6 +59,19 @@ struct UserData
             {"Type", type},
             {"Password", password}
         };
+    }
+
+    static UserData fromWidgetMap(const QVariantMap &variant)
+    {
+        UserData temp;
+        temp.id = variant.value("idr", 0).toLongLong();
+        temp.phoneNumber = variant.value("Phone number").toLongLong();
+        temp.firstName = variant.value("First name").toString();
+        temp.lastName = variant.value("Last name").toString();
+        temp.surname = variant.value("Surname").toString();
+        temp.age = variant.value("Age").toInt();
+        temp.password = variant.value("Password").toString();
+        return temp;
     }
 };
 

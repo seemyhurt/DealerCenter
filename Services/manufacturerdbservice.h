@@ -25,6 +25,11 @@ public:
      */
     static QString baseKey();
 
+    QVariantList getAllManufacturers();
+
+signals:
+    void manufacturerAdded(const ManufacturerData & data);
+
 protected slots:
     /**
      * @brief Реализация изменения статуса БД.
@@ -38,6 +43,7 @@ private:
 private:
     DatabaseCommon::LocalDBStorage<ManufacturerData> _storage;
     QSharedPointer<ManufacturerDBProvider> _provider;
+    QHash<QString, QVector<ManufacturerData>> _manufacturersToBrand;
 };
 
 #endif // MANUFACTURERDBSERVICE_H

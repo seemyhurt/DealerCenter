@@ -27,10 +27,23 @@ QSqlError ManufacturerDBService::addEntry(QVariantMap &values)
 
     auto data = ManufacturerData::fromDBMap(values);
 
+    if (_storage.elements().contains(data.id))
+    {
+        for (auto &element : _manufacturersToBrand[data.carBrand])
+        {
+            if (element.id == data.id)
+                element = data;
+        }
+        //TODO изменение данных в модели
+        return _storage.addEntry(_provider.data(), values, true, data);
+    }
+
     auto id = _storage.size() + 1;
     values["id"] = id;
     data.id = id;
+    _manufacturersToBrand[data.carBrand].push_back(data);
 
+    emit manufacturerAdded(data);
     return _storage.addEntry(_provider.data(), values, false, data);
 }
 
@@ -55,7 +68,16 @@ void ManufacturerDBService::handleDbConnectionChange(DatabaseCommon::LocalDBStat
 
 void ManufacturerDBService::selectDataFromStorage()
 {
+    for (const auto & element : qAsConst(_storage.elements()))
+        _manufacturersToBrand[element.carBrand].push_back(element);
+}
 
+QVariantList ManufacturerDBService::getAllManufacturers()
+{
+    QVariantList result;
+    for (const auto & element : qAsConst(_storage.elements()))
+        result << element.toWidgetMap();
+    return result;
 }
 
 QString ManufacturerDBService::baseKey()

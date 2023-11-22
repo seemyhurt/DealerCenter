@@ -4,6 +4,7 @@
 #include "Services/servicelocator.h"
 #include "Services/transportdbservice.h"
 #include "Services/userdbservice.h"
+#include "Services/manufacturerdbservice.h"
 
 void initServices();
 
@@ -27,4 +28,7 @@ void initServices()
 
     auto userService = QSharedPointer<UserDBService>::create();
     ServiceLocator::addService(userService);
+
+    auto manufacturerService = QSharedPointer<ManufacturerDBService>::create();
+    ServiceLocator::addService(manufacturerService);
 }

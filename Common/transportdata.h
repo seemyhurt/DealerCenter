@@ -41,7 +41,7 @@ struct TransportData
         return temp;
     }
 
-    QVariantMap toWigdetMap() const
+    QVariantMap toWidgetMap() const
     {
         return QVariantMap {
             {"id", id},

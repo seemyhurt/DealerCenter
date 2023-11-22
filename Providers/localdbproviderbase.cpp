@@ -61,8 +61,8 @@ void LocalDBProviderBase::updateDatabases()
 {
     QFile file(_name);
 
-    file.exists() ? _status = createNewTable()
-                  : _status = readDataFromTable();
+    file.exists() ? _status = readDataFromTable()
+                  : _status = createNewTable();
 
     emit dbConnectionChanged(_status);
 }

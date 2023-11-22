@@ -26,12 +26,13 @@ QSqlError UserDBService::addEntry(QVariantMap &values)
     auto data = UserData::fromDBMap(values);
     auto knownNumber = isUserExist(data.phoneNumber);
 
-    auto id = isUserExist(data.phoneNumber) ? _phoneToUser[data.phoneNumber].id
-                                            : data.id;
+    auto id = knownNumber ? _phoneToUser[data.phoneNumber].id
+                          : data.id;
 
     if (_storage.elements().contains(id) || knownNumber)
     {
         _phoneToUser[data.phoneNumber] = data;
+        //TODO изменение данных в модели
         return _storage.addEntry(_provider.data(), values, true, data);
     }
 
@@ -84,7 +85,7 @@ QVariantList UserDBService::getAllUsers()
 {
     QVariantList result;
     for (const auto & element : qAsConst(_storage.elements()))
-        result << element.toWigdetMap();
+        result << element.toWidgetMap();
     return result;
 }
 
