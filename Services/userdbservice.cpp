@@ -85,7 +85,23 @@ QVariantList UserDBService::getAllUsers()
 {
     QVariantList result;
     for (const auto & element : qAsConst(_storage.elements()))
+    {
+        if (element.type != QLatin1String("Customer"))
+            continue;
         result << element.toWidgetMap();
+    }
+    return result;
+}
+
+QVariantList UserDBService::getAllManagers()
+{
+    QVariantList result;
+    for (const auto & element : qAsConst(_storage.elements()))
+    {
+        if (element.type != QLatin1String("Manager"))
+            continue;
+        result << element.toWidgetMap();
+    }
     return result;
 }
 

@@ -1,5 +1,5 @@
 #include "iinputdialogbase.h"
-#include <QtGlobal>
+
 #include <QLineEdit>
 #include <QLabel>
 #include <QPushButton>
@@ -20,21 +20,21 @@ IInputDialogBase::IInputDialogBase(const QStringList & params, QWidget *pwgt)
     QPushButton* pcmdOk = new QPushButton("&Ok", this);
     QPushButton* pcmdCancel = new QPushButton("&Cancel", this);
 
-    connect(pcmdOk, &QPushButton::clicked, this, &IInputDialogBase::accept);
-    connect(pcmdCancel, &QPushButton::clicked, this,  &IInputDialogBase::reject);
+    connect(pcmdOk, &QPushButton::clicked, this, &QDialog::accept);
+    connect(pcmdCancel, &QPushButton::clicked, this,  &QDialog::reject);
 
-    QGridLayout* ptopLayout = new QGridLayout(this);
+    _layout = new QGridLayout(this);
     for (int i = 0; i < size; i++)
     {
         _labels[i]->setBuddy(_inputWidgets[i]);
-        ptopLayout->addWidget(_labels[i], i, 0);
-        ptopLayout->addWidget(_inputWidgets[i], i, 1);
+        _layout->addWidget(_labels[i], i, 0);
+        _layout->addWidget(_inputWidgets[i], i, 1);
     }
 
-    ptopLayout->addWidget(pcmdOk, size, 0);
-    ptopLayout->addWidget(pcmdCancel, size, 1);
+    _layout->addWidget(pcmdOk, size, 0);
+    _layout->addWidget(pcmdCancel, size, 1);
 
-    setLayout(ptopLayout);
+    setLayout(_layout);
 }
 
 IInputDialogBase::~IInputDialogBase()

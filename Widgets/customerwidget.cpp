@@ -1,6 +1,6 @@
 #include "customerwidget.h"
 #include "inputuserdialog.h"
-#include "inputnumberdialog.h"
+#include "logindialog.h"
 #include "../Services/servicelocator.h"
 #include "../Services/userdbservice.h"
 
@@ -43,45 +43,45 @@ CustomerWidget::CustomerWidget(QWidget *parent)
 
 bool CustomerWidget::loginCutomer()
 {
-    auto dialog = new InputNumberDialog(this);
+    auto dialog = new LoginDialog(true, this);
+    connect(dialog, &LoginDialog::needRegister, this, &CustomerWidget::handleRegisterUser);
+
     if (dialog->exec() != QDialog::Accepted)
         return false;
 
-    auto phoneNumber = dialog->getDialogInfo();
+    auto loginInfo = dialog->getDialogInfo();
 
-    if (!_service->isUserExist(phoneNumber))
-        return registerUser();
-
-    QString password = QInputDialog::getText(nullptr, "Enter password", "Password:");
-    if (!_service->isPasswordCorrect(phoneNumber, password))
+    if (!_service->isUserExist(loginInfo.first))
     {
-        QMessageBox::warning(nullptr, "Error", "Incorrect password!");
+        QMessageBox::warning(this, "Error", "User with that number not exists!");
+        return false;
+    }
+    if (!_service->isPasswordCorrect(loginInfo.first, loginInfo.second))
+    {
+        QMessageBox::warning(this, "Error", "Wrong password!");
         return false;
     }
 
-    QMessageBox::information(nullptr, "Success", "You have successfully logged in!");
+    QMessageBox::information(this, "Success", "You have successfully logged in!");
     return true;
 }
 
-bool CustomerWidget::registerUser()
+void CustomerWidget::handleRegisterUser()
 {
     auto dialog = new InputUserDialog();
     if (dialog->exec() != QDialog::Accepted)
-        return false;
+        return;
 
     auto user = dialog->getDialogInfo();
-    delete dialog;
 
     user.type = "Customer";
     auto userDbdata = user.toDBMap();
+
     if (_service->addEntry(userDbdata).type() == QSqlError::NoError)
     {
         QMessageBox::information(this, "Successfully added", "You have successfully registered!");
-        return true;
+        emit newUserRegistred();
     }
-
-    QMessageBox::warning(nullptr, "Error", "Incorrect user data");
-    return false;
-
-
+    else
+        QMessageBox::warning(this, "Error", "Incorrect user data");
 }

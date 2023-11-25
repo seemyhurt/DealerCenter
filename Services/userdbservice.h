@@ -26,6 +26,7 @@ public:
     static QString baseKey();
 
     QVariantList getAllUsers();
+    QVariantList getAllManagers();
 
 signals:
     void userAdded(const UserData & data);

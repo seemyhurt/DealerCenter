@@ -5,6 +5,7 @@
 
 class QLineEdit;
 class QLabel;
+class QGridLayout;
 
 class IInputDialogBase : public QDialog
 {
@@ -17,9 +18,12 @@ public:
 protected:
     QVariantMap getVariantData(const QStringList &params);
 
+    QGridLayout * currentLayout() { return _layout; };
+
 private:
     QVector<QLineEdit*> _inputWidgets;
     QVector<QLabel*> _labels;
+    QGridLayout * _layout;
 };
 
 #endif // IINPUTDIALOGBASE_H

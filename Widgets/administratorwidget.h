@@ -4,15 +4,12 @@
 #include <QWidget>
 #include <QSharedPointer>
 
-
 class QTabWidget;
 class QStandardItemModel;
 
-class UserDBService;
-struct UserData;
-
-class ManufacturerDBService;
-struct ManufacturerData;
+class CustomersTableWidget;
+class ManufacturersTableWidget;
+class ManagersTableWidget;
 
 class AdministratorWidget : public QWidget
 {
@@ -21,24 +18,10 @@ public:
     AdministratorWidget(QWidget * parent = nullptr);
 
 private:
-    void initCustomersWidget();
-    void initManufacturersWidget();
-
-private slots:
-    void handleNeedUpdateCustomers(const UserData& data);
-    void handleNeedUpdateManufacturers(const ManufacturerData& data);
-
-    void handleNeedAddManufacturer();
-
-private:
     QSharedPointer<QTabWidget> _tabs;
-    QSharedPointer<UserDBService> _userService;
-    QSharedPointer<QWidget> _customersWidget;
-    QSharedPointer<QStandardItemModel> _customerModel;
-
-    QSharedPointer<ManufacturerDBService> _manufacturersService;
-    QSharedPointer<QWidget> _manufacturersWidget;
-    QSharedPointer<QStandardItemModel> _manufacturersModel;
+    QSharedPointer<CustomersTableWidget> _customersWidget;
+    QSharedPointer<ManufacturersTableWidget> _manufacturersWidget;
+    QSharedPointer<ManagersTableWidget> _managersWidget;
 };
 
 #endif // ADMINISTRATORWIDGET_H

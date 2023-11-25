@@ -19,9 +19,14 @@ set(PROJECT_SOURCES
     Widgets/administratorwidget.cpp
     Widgets/inputuserdialog.cpp
     Widgets/iinputdialogbase.cpp
-    Widgets/inputnumberdialog.cpp
+    Widgets/logindialog.cpp
     Widgets/mainwidget.cpp
     Widgets/inputmanufacturerdialog.cpp
+    Widgets/customerstablewidget.cpp
+    Widgets/manufacturerstablewidget.cpp
+    Widgets/managerstablewidget.cpp
+    Widgets/managerswidget.cpp
+    Widgets/purchasewidget.cpp
 
     Providers/transportdbprovider.cpp
     Providers/localdbproviderbase.cpp
@@ -35,6 +40,8 @@ set(PROJECT_SOURCES
     Services/ilocaldbservicebase.cpp
     Services/manufacturerdbservice.cpp
 
+    Models/manufacturersmodel.cpp
+
     iinputvalidator.cpp
     main.cpp
 )
@@ -43,12 +50,17 @@ set(PROJECT_HEADERS
     Widgets/appmenu.h
     Widgets/customerwidget.h
     Widgets/inputcardialog.h
-    Widgets/inputnumberdialog.h
+    Widgets/logindialog.h
     Widgets/administratorwidget.h
     Widgets/inputuserdialog.h
     Widgets/iinputdialogbase.h
     Widgets/mainwidget.h
     Widgets/inputmanufacturerdialog.h
+    Widgets/customerstablewidget.h
+    Widgets/manufacturerstablewidget.h
+    Widgets/managerstablewidget.h
+    Widgets/managerswidget.h
+    Widgets/purchasewidget.h
 
     Providers/transportdbprovider.h
     Providers/iprovider.h
@@ -68,6 +80,8 @@ set(PROJECT_HEADERS
     Common/userdata.h
     Common/transportdata.h
     Common/manufacturerdata.h
+
+    Models/manufacturersmodel.h
 
     iinputvalidator.h
 )

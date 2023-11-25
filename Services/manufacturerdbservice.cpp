@@ -80,6 +80,19 @@ QVariantList ManufacturerDBService::getAllManufacturers()
     return result;
 }
 
+QStringList ManufacturerDBService::getManufacturersByBrand(const QString & brand)
+{
+    QStringList result;
+    const auto &manufacturers = _manufacturersToBrand.value(brand);
+    for (const auto &manufacturer : qAsConst(manufacturers))
+        result << manufacturer.name;
+    return result;
+}
+QStringList ManufacturerDBService::getAvailableBrands()
+{
+    return _manufacturersToBrand.keys();
+}
+
 QString ManufacturerDBService::baseKey()
 {
     return "ManufacturerDBService";

@@ -15,8 +15,11 @@ public:
 
     bool loginCutomer();
 
-private:
-    bool registerUser();
+signals:
+    void newUserRegistred();
+
+private slots:
+    void handleRegisterUser();
 
 private:
     QSharedPointer<UserDBService> _service;

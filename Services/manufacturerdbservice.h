@@ -26,6 +26,8 @@ public:
     static QString baseKey();
 
     QVariantList getAllManufacturers();
+    QStringList getAvailableBrands();
+    QStringList getManufacturersByBrand(const QString & brand);
 
 signals:
     void manufacturerAdded(const ManufacturerData & data);
