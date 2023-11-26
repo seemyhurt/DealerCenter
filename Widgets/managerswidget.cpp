@@ -52,7 +52,7 @@ bool ManagersWidget::loginManager()
         return false;
     }
 
-    if (!_service->isPasswordCorrect(loginInfo.first, loginInfo.second))
+    else if (!_service->isPasswordCorrect(loginInfo.first, loginInfo.second))
     {
         QMessageBox::warning(nullptr, "Error", "Incorrect password!");
         return false;

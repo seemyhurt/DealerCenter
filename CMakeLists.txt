@@ -32,6 +32,7 @@ set(PROJECT_SOURCES
     Providers/localdbproviderbase.cpp
     Providers/userdbprovider.cpp
     Providers/manufacturerdbprovider.cpp
+    Providers/purchasedbprovider.cpp
 
     Services/transportdbservice.cpp
     Services/servicelocator.cpp
@@ -39,6 +40,7 @@ set(PROJECT_SOURCES
     Services/userdbservice.cpp
     Services/ilocaldbservicebase.cpp
     Services/manufacturerdbservice.cpp
+    Services/purchasesdbservice.cpp
 
     Models/manufacturersmodel.cpp
 
@@ -68,6 +70,7 @@ set(PROJECT_HEADERS
     Providers/localdbproviderbase.h
     Providers/userdbprovider.h
     Providers/manufacturerdbprovider.h
+    Providers/purchasedbprovider.h
 
     Services/ilocaldbservicebase.h
     Services/transportdbservice.h
@@ -76,10 +79,12 @@ set(PROJECT_HEADERS
     Services/userdbservice.h
     Services/coreservice.h
     Services/manufacturerdbservice.h
+    Services/purchasesdbservice.h
 
     Common/userdata.h
     Common/transportdata.h
     Common/manufacturerdata.h
+    Common/purchasedata.h
 
     Models/manufacturersmodel.h
 
@@ -88,7 +93,7 @@ set(PROJECT_HEADERS
 
 add_executable(DilerCenter
     ${PROJECT_HEADERS}
-    ${PROJECT_SOURCES}
+    ${PROJECT_SOURCES}    
 )
 
 target_link_libraries(DilerCenter PRIVATE Qt${QT_VERSION_MAJOR}::Widgets

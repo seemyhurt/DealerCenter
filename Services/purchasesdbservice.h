@@ -1,18 +1,18 @@
-#ifndef TRANSPORTDBSERVICE_H
-#define TRANSPORTDBSERVICE_H
+#ifndef PURCHASESDBSERVICE_H
+#define PURCHASESDBSERVICE_H
 
 #include <QSharedPointer>
 #include "ilocaldbservicebase.h"
 #include "../Providers/localbbstorage.h"
 
-class TransportDBProvider;
-struct TransportData;
+class PurchaseDBProvider;
+struct PurchaseData;
 
-class TransportDBService : public DatabaseCommon::ILocalDBServiceBase
+class PurchasesDBService : public DatabaseCommon::ILocalDBServiceBase
 {
     Q_OBJECT
 public:
-    explicit TransportDBService(QObject *parent = nullptr);
+    explicit PurchasesDBService(QObject *parent = nullptr);
 
     // ILocalDBServiceBase interface
     quint64 tableSize() const override;
@@ -36,9 +36,9 @@ private:
     void selectDataFromStorage();
 
 private:
-    DatabaseCommon::LocalDBStorage<TransportData> _storage;
-    QSharedPointer<TransportDBProvider> _provider;
+    DatabaseCommon::LocalDBStorage<PurchaseData> _storage;
+    QSharedPointer<PurchaseDBProvider> _provider;
 
 };
 
-#endif // TRANSPORTDBSERVICE_H
+#endif // PURCHASESDBSERVICE_H

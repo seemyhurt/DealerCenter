@@ -16,6 +16,8 @@ struct TransportData
     int price;              ///< Цена
     int year;               ///< Год выпуска
     int count;              ///< Количество
+    QString condition;      ///< Состояние транспорта
+    QString type;           ///< Тип транспортного средства
 
     QVariantMap toDBMap() const
     {
@@ -25,7 +27,9 @@ struct TransportData
             {"model", model},
             {"price", price},
             {"year", year},
-            {"count", count}
+            {"count", count},
+            {"condition", condition},
+            {"type", type}
         };
     }
 
@@ -38,6 +42,8 @@ struct TransportData
         temp.price = variant.value("price").toInt();
         temp.year = variant.value("year").toInt();
         temp.count = variant.value("count").toInt();
+        temp.condition = variant.value("condition").toString();
+        temp.type = variant.value("type").toString();
         return temp;
     }
 
@@ -49,7 +55,9 @@ struct TransportData
             {"Model", model},
             {"Price", price},
             {"Year", year},
-            {"Count", count}
+            {"Count", count},
+            {"Condition", condition},
+            {"Type", type}
         };
     }
 };

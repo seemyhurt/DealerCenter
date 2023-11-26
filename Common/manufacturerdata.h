@@ -14,7 +14,8 @@ struct ManufacturerData
     QString name;           ///< название производителя
     int deliveryTime;       ///< сроки поставки
     int guaranteePeriod;    ///< срок гарантии на поставляемые товары
-    QString carBrand;       ///< брэнд выпускаемых автомобилей
+    QString carBrand;       ///< брэнд выпускаемых транспортных средств
+    QString type;           ///< тип выпускаемых транспортных средств
 
 
     QVariantMap toDBMap() const
@@ -24,7 +25,8 @@ struct ManufacturerData
             {"name", name},
             {"deliveryTime", deliveryTime},
             {"guaranteePeriod", guaranteePeriod},
-            {"carBrand", carBrand}
+            {"carBrand", carBrand},
+            {"type", type}
         };
     }
 
@@ -36,6 +38,7 @@ struct ManufacturerData
         temp.deliveryTime = variant.value("deliveryTime").toInt();
         temp.guaranteePeriod = variant.value("guaranteePeriod").toInt();
         temp.carBrand = variant.value("carBrand").toString();
+        temp.type = variant.value("type").toString();
         return temp;
     }
 
@@ -44,9 +47,10 @@ struct ManufacturerData
         return QVariantMap {
             {"ID", id},
             {"Name", name},
-            {"Delivery time", deliveryTime},
-            {"Guarantee period", guaranteePeriod},
-            {"Car brand", carBrand}
+            {"Delivery time, days", deliveryTime},
+            {"Guarantee period, years", guaranteePeriod},
+            {"Car brand", carBrand},
+            {"Transport type", type}
         };
     }
 
@@ -55,9 +59,10 @@ struct ManufacturerData
         ManufacturerData temp;
         temp.id = variant.value("ID", 0).toInt();
         temp.name = variant.value("Name").toString();
-        temp.deliveryTime = variant.value("Delivery time").toInt();
-        temp.guaranteePeriod = variant.value("Guarantee period").toInt();
+        temp.deliveryTime = variant.value("Delivery time, days").toInt();
+        temp.guaranteePeriod = variant.value("Guarantee period, years").toInt();
         temp.carBrand = variant.value("Car brand").toString();
+        temp.type = variant.value("Transport type").toString();
         return temp;
     }
 };

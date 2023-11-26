@@ -1,6 +1,6 @@
 #include "inputmanufacturerdialog.h"
 
-QStringList InputManufacturerDialog::_params = {"Name", "Delivery time", "Guarantee period", "Car brand"};
+QStringList InputManufacturerDialog::_params = {"Name", "Delivery time, days", "Guarantee period, years", "Car brand", "Type"};
 
 InputManufacturerDialog::InputManufacturerDialog(QWidget *pwgt) : IInputDialogBase(_params, pwgt)
 {

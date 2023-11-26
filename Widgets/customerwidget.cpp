@@ -56,7 +56,7 @@ bool CustomerWidget::loginCutomer()
         QMessageBox::warning(this, "Error", "User with that number not exists!");
         return false;
     }
-    if (!_service->isPasswordCorrect(loginInfo.first, loginInfo.second))
+    else if (!_service->isPasswordCorrect(loginInfo.first, loginInfo.second))
     {
         QMessageBox::warning(this, "Error", "Wrong password!");
         return false;
