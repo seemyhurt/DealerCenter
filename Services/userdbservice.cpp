@@ -41,9 +41,10 @@ QSqlError UserDBService::addEntry(QVariantMap &values)
     data.id = id;
     _phoneToUser.insert(data.phoneNumber, data);
 
-    emit userAdded(data);
-
-    return _storage.addEntry(_provider.data(), values, false, data);
+    auto err = _storage.addEntry(_provider.data(), values, false, data);
+    if (err.type() == QSqlError::NoError)
+        emit userAdded(data);
+    return err;
 }
 
 QSqlError UserDBService::removeEntry(quint64 id)
@@ -54,6 +55,11 @@ QSqlError UserDBService::removeEntry(quint64 id)
 bool UserDBService::isUserExist(quint64 number)
 {
     return _phoneToUser.contains(number);
+}
+
+UserData UserDBService::getUserInfo(quint64 number)
+{
+    return _phoneToUser.value(number);
 }
 
 bool UserDBService::isPasswordCorrect(quint64 number, const QString & password)

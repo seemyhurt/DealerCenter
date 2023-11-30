@@ -27,24 +27,28 @@ QSqlError ManufacturerDBService::addEntry(QVariantMap &values)
 
     auto data = ManufacturerData::fromDBMap(values);
 
-    if (_storage.elements().contains(data.id))
-    {
-        for (auto &element : _manufacturersToBrand[data.carBrand])
-        {
-            if (element.id == data.id)
-                element = data;
-        }
-        //TODO изменение данных в модели
-        return _storage.addEntry(_provider.data(), values, true, data);
-    }
+//    if (_storage.elements().contains(data.id))
+//    {
+//        for (auto &element : _namesToBrand[data.carBrand])
+//        {
+//            if (element.id == data.id)
+//                element = data;
+//        }
+//        //TODO изменение данных в модели
+//        return _storage.addEntry(_provider.data(), values, true, data);
+//    }
 
     auto id = _storage.size() + 1;
     values["id"] = id;
     data.id = id;
-    _manufacturersToBrand[data.carBrand].push_back(data);
+    _namesToBrand[data.carBrand].push_back(data.name);
+    _brandsToType[data.type].insert(data.carBrand);
+    _manufacturers.insert(data.name, data);
 
-    emit manufacturerAdded(data);
-    return _storage.addEntry(_provider.data(), values, false, data);
+    auto err = _storage.addEntry(_provider.data(), values, false, data);
+    if (err.type() == QSqlError::NoError)
+        emit manufacturerAdded(data);
+    return err;
 }
 
 QSqlError ManufacturerDBService::removeEntry(quint64 id)
@@ -69,7 +73,11 @@ void ManufacturerDBService::handleDbConnectionChange(DatabaseCommon::LocalDBStat
 void ManufacturerDBService::selectDataFromStorage()
 {
     for (const auto & element : qAsConst(_storage.elements()))
-        _manufacturersToBrand[element.carBrand].push_back(element);
+    {
+        _namesToBrand[element.carBrand] << element.name;
+        _brandsToType[element.type].insert(element.carBrand);
+        _manufacturers.insert(element.name, element);
+    }
 }
 
 QVariantList ManufacturerDBService::getAllManufacturers()
@@ -82,15 +90,32 @@ QVariantList ManufacturerDBService::getAllManufacturers()
 
 QStringList ManufacturerDBService::getManufacturersByBrand(const QString & brand)
 {
+    return _namesToBrand.value(brand);
+}
+
+QStringList ManufacturerDBService::getManufacturersByType(const QString & type)
+{
     QStringList result;
-    const auto &manufacturers = _manufacturersToBrand.value(brand);
-    for (const auto &manufacturer : qAsConst(manufacturers))
-        result << manufacturer.name;
+    const auto & brands = _brandsToType[type];
+    result.reserve(brands.size());
+    for (const auto &brand : qAsConst(brands))
+        result << brand;
     return result;
 }
+
+ManufacturerData ManufacturerDBService::getManufacturerInfo(const QString & name)
+{
+    return _manufacturers.value(name);
+}
+
+QStringList ManufacturerDBService::getAvailableTypes()
+{
+    return _brandsToType.keys();
+}
+
 QStringList ManufacturerDBService::getAvailableBrands()
 {
-    return _manufacturersToBrand.keys();
+    return _namesToBrand.keys();
 }
 
 QString ManufacturerDBService::baseKey()

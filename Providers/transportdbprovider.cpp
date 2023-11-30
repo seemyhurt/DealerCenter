@@ -15,7 +15,9 @@ TransportDBProvider::TransportDBProvider(QObject* parent) :
                                                    {"year"},
                                                    {"count"},
                                                    {"condition"},
-                                                   {"type"}
+                                                   {"type"},
+                                                   {"inStock"},
+                                                   {"receiptDate"}
     };
 
     setContext("car_data",
@@ -37,7 +39,9 @@ QVector<TransportData> TransportDBProvider::getCars()
                           make_pair("year", &CD::year),
                           make_pair("count", &CD::count),
                           make_pair("condition", &CD::condition),
-                          make_pair("type", &CD::type));
+                          make_pair("type", &CD::type),
+                          make_pair("inStock", &CD::inStock),
+                          make_pair("receiptDate", &CD::receiptDate));
 }
 
 QString TransportDBProvider::baseKey()

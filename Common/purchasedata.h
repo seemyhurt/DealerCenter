@@ -15,7 +15,7 @@ struct PurchaseData
     int userId;         ///< Идентификатор пользователя
     int transportId;    ///< Идентификатор транспортного средства
     int count;          ///< Количество купленного товара
-    quint64 date;     ///< Дата и время покупки
+    quint64 date;       ///< Дата и время покупки
 
     QVariantMap toDBMap() const
     {

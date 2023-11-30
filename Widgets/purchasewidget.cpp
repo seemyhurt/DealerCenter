@@ -1,91 +1,144 @@
 #include "purchasewidget.h"
 #include "../Services/servicelocator.h"
 #include "../Services/manufacturerdbservice.h"
+#include "../Services/userdbservice.h"
+#include "../Services/purchasesdbservice.h"
+#include "../Services/transportdbservice.h"
 #include "../Common/manufacturerdata.h"
+#include "../Common/transportdata.h"
 
 #include <QComboBox>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLineEdit>
 #include <QLabel>
+#include <QDateTime>
+#include <QSpinBox>
 
 PurchaseWidget::PurchaseWidget(QWidget *parent) :
     QWidget(parent),
-    _service(ServiceLocator::service<ManufacturerDBService>())
+    _manufacturersService(ServiceLocator::service<ManufacturerDBService>()),
+    _usersService(ServiceLocator::service<UserDBService>()),
+    _transportService(ServiceLocator::service<TransportDBService>()),
+    _purchasesService(ServiceLocator::service<PurchasesDBService>())
 {
+    auto lblType = new QLabel("&Transport type", this);
+    _type = new QComboBox(this);
+    lblType->setBuddy(_type);
+
     auto lblBrand = new QLabel("&Brand", this);
-    brand = new QComboBox(this);
-    lblBrand->setBuddy(brand);
+    _brand = new QComboBox(this);
+    lblBrand->setBuddy(_brand);
 
     auto lblManufacturers = new QLabel("&Manufacturer", this);
-    manufacturer = new QComboBox(this);
+    _manufacturer = new QComboBox(this);
     lblManufacturers->setBuddy(lblManufacturers);
 
     auto lblCondition = new QLabel("&Condition", this);
-    condition = new QComboBox(this);
-    lblCondition->setBuddy(condition);
-    condition->addItems({"New", "Old model", "Previously used"});
+    _condition = new QComboBox(this);
+    lblCondition->setBuddy(_condition);
+    _condition->addItems({"New", "Old model", "Previously used"});
 
     auto lblModel = new QLabel("&Model", this);
-    auto model = new QLineEdit(this);
-    lblModel->setBuddy(model);
+    _model = new QLineEdit(this);
+    lblModel->setBuddy(_model);
 
     auto lblYear = new QLabel("&Year", this);
-    year = new QLineEdit(this);
-    lblYear->setBuddy(year);
+    _year = new QLineEdit(this);
+    lblYear->setBuddy(_year);
 
-    brand->addItems(_service->getAvailableBrands());
+    auto lblCount = new QLabel("&Count", this);
+    _count = new QSpinBox(this);
+    lblCount->setBuddy(_count);
+    _count->setMaximum(100);
+    _count->setMinimum(1);
 
-    connect(brand, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleBrandChanged);
-    connect(condition, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleConditionChanged);
-    connect(_service.data(), &ManufacturerDBService::manufacturerAdded, this, &PurchaseWidget::handleManufacturerAdded);
+    _brand->addItems(_manufacturersService->getAvailableBrands());
+    _type->addItems(_manufacturersService->getAvailableTypes());
+
+    connect(_type, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleTypeChanged);
+    connect(_brand, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleBrandChanged);
+    connect(_condition, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleConditionChanged);
+    connect(_manufacturersService.data(), &ManufacturerDBService::manufacturerAdded, this, &PurchaseWidget::handleCreatePurchase);
 
     auto buttonBuy = new QPushButton("Buy new car", this);
+    connect(buttonBuy, &QPushButton::clicked, this, &PurchaseWidget::needCreatePurchase);
 
     QGridLayout * layout = new QGridLayout(this);
 
-    layout->addWidget(brand, 0, 1);
-    layout->addWidget(lblBrand, 0, 0);
-    layout->addWidget(manufacturer, 1, 1);
-    layout->addWidget(lblManufacturers, 1, 0);
-    layout->addWidget(condition, 2, 1);
-    layout->addWidget(lblCondition, 2, 0);
-    layout->addWidget(model, 3, 1);
-    layout->addWidget(lblModel, 3, 0);
-    layout->addWidget(year, 4, 1);
-    layout->addWidget(lblYear, 4, 0);
-    layout->addWidget(buttonBuy, 5, 1);
+    layout->addWidget(lblType, 0, 0);
+    layout->addWidget(_type, 0, 1);
+    layout->addWidget(lblBrand, 1, 0);
+    layout->addWidget(_brand, 1, 1);
+    layout->addWidget(lblManufacturers, 2, 0);
+    layout->addWidget(_manufacturer, 2, 1);
+    layout->addWidget(lblCondition, 3, 0);
+    layout->addWidget(_condition, 3, 1);
+    layout->addWidget(lblModel, 4, 0);
+    layout->addWidget(_model, 4, 1);
+    layout->addWidget(lblYear, 5, 0);
+    layout->addWidget(_year, 5, 1);
+    layout->addWidget(lblCount, 6, 0);
+    layout->addWidget(_count, 6, 1);
+    layout->addWidget(buttonBuy, 7, 1);
 
     setLayout(layout);
-    handleBrandChanged(brand->currentText());
-    handleConditionChanged(condition->currentText());
+    handleTypeChanged(_type->currentText());
+    handleBrandChanged(_brand->currentText());
+    handleConditionChanged(_condition->currentText());
 }
 
 void PurchaseWidget::handleBrandChanged(const QString &brand)
 {
-    manufacturer->clear();
-    manufacturer->addItems(_service->getManufacturersByBrand(brand));
+    _manufacturer->clear();
+    _manufacturer->addItems(_manufacturersService->getManufacturersByBrand(brand));
+}
+
+void PurchaseWidget::handleTypeChanged(const QString &type)
+{
+    _brand->clear();
+    _brand->addItems(_manufacturersService->getManufacturersByType(type));
 }
 
 void PurchaseWidget::handleConditionChanged(const QString &condition)
 {
     if (condition == QLatin1String("New"))
     {
-        year->setText("2023");
-        year->setReadOnly(true);
+        _year->setText("2023");
+        _year->setReadOnly(true);
     }
     else
     {
-        year->clear();
-        year->setReadOnly(false);
+        _year->clear();
+        _year->setReadOnly(false);
     }
 }
 
 void PurchaseWidget::handleManufacturerAdded(const ManufacturerData & data)
 {
-    auto index = brand->findText(data.carBrand);
+    auto index = _brand->findText(data.carBrand);
     if (index == -1)
-        brand->addItem(data.carBrand);
-    else if (index == brand->currentIndex())
-        manufacturer->addItem(data.name);
+        _brand->addItem(data.carBrand);
+    else if (index == _brand->currentIndex())
+        _manufacturer->addItem(data.name);
+}
+
+void PurchaseWidget::handleCreatePurchase()
+{
+    auto user = _usersService->getUserInfo(_currentUserNumber);
+    auto manufacturer = _manufacturersService->getManufacturerInfo(_manufacturer->currentText());
+
+    TransportData data;
+    data.brand = manufacturer.carBrand;
+    data.model = _model->text();
+    data.price = 1000; //TODO + гарантия
+    data.year = _year->text().toInt();
+    data.count = _count->text().toInt();
+    data.condition = _condition->currentText();
+    data.type = _type->currentText();
+    data.inStock = false;
+    data.receiptDate = QDateTime::currentDateTime()
+                           .addDays(manufacturer.deliveryTime).toMSecsSinceEpoch();
+
+
 }

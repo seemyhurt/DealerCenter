@@ -17,24 +17,29 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QSqlError>
+#include <QGroupBox>
 
 ManagersWidget::ManagersWidget(QWidget *parent)
     : QWidget(parent),
     _service(ServiceLocator::service<UserDBService>()),
     _manufacturersModel(QSharedPointer<ManufacturersModel>::create())
 {
+    auto groupPurchase = new QGroupBox("Purchase form: ", this);
+
     auto tableView = new QTableView(this);
     tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableView->verticalHeader()->setVisible(false);
-
-    auto purchaseWidget = new PurchaseWidget(this);
-    auto layout = new QVBoxLayout(this);
-
     tableView->setModel(_manufacturersModel.data());
     tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
+    auto purchaseWidget = new PurchaseWidget(this);
+    connect(purchaseWidget, &PurchaseWidget::needCreatePurchase, this, &ManagersWidget::handleCreatePurchase);
+    auto layout = new QVBoxLayout(this);
+
+    groupPurchase->setLayout(purchaseWidget->layout());
+
     layout->addWidget(tableView);
-    layout->addWidget(purchaseWidget);
+    layout->addWidget(groupPurchase);
     setLayout(layout);
 }
 

@@ -3,7 +3,7 @@
 #include "../Services/servicelocator.h"
 #include "../Common/manufacturerdata.h"
 
-static const QStringList ManufacturersInfo = {"ID", "Name", "Delivery time, days", "Guarantee period, years", "Car brand"};
+static const QStringList ManufacturersInfo = {"ID", "Name", "Delivery time, days", "Guarantee period, years", "Car brand", "Transport type"};
 
 ManufacturersModel::ManufacturersModel(QObject * parent) :
     QStandardItemModel(parent),

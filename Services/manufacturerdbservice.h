@@ -28,6 +28,9 @@ public:
     QVariantList getAllManufacturers();
     QStringList getAvailableBrands();
     QStringList getManufacturersByBrand(const QString & brand);
+    QStringList getAvailableTypes();
+    QStringList getManufacturersByType(const QString & type);
+    ManufacturerData getManufacturerInfo(const QString & name);
 
 signals:
     void manufacturerAdded(const ManufacturerData & data);
@@ -45,7 +48,9 @@ private:
 private:
     DatabaseCommon::LocalDBStorage<ManufacturerData> _storage;
     QSharedPointer<ManufacturerDBProvider> _provider;
-    QHash<QString, QVector<ManufacturerData>> _manufacturersToBrand;
+    QHash<QString, QStringList> _namesToBrand;
+    QHash<QString, QSet<QString>> _brandsToType;
+    QHash<QString, ManufacturerData> _manufacturers;
 };
 
 #endif // MANUFACTURERDBSERVICE_H

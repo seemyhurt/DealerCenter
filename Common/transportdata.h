@@ -18,6 +18,8 @@ struct TransportData
     int count;              ///< Количество
     QString condition;      ///< Состояние транспорта
     QString type;           ///< Тип транспортного средства
+    bool inStock;           ///< Сейчас в наличии
+    quint64 receiptDate;    ///< Дата поступления
 
     QVariantMap toDBMap() const
     {
@@ -29,7 +31,9 @@ struct TransportData
             {"year", year},
             {"count", count},
             {"condition", condition},
-            {"type", type}
+            {"type", type},
+            {"inStock", inStock},
+            {"receiptDate", receiptDate}
         };
     }
 
@@ -44,6 +48,8 @@ struct TransportData
         temp.count = variant.value("count").toInt();
         temp.condition = variant.value("condition").toString();
         temp.type = variant.value("type").toString();
+        temp.inStock = variant.value("inStock").toBool();
+        temp.receiptDate = variant.value("receiptDate").toLongLong();
         return temp;
     }
 

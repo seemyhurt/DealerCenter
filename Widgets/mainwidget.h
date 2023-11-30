@@ -26,8 +26,6 @@ private:
     QSharedPointer<ManagersWidget> _managerWidget;
 
     QWidget * _lastAddedWidet = nullptr;
-
-    QSharedPointer<QLayout> _currentLayout;
 };
 
 #endif // MAINWIDGET_H

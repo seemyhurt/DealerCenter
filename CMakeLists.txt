@@ -14,7 +14,6 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
 
 set(PROJECT_SOURCES
     Widgets/appmenu.cpp
-    Widgets/inputcardialog.cpp
     Widgets/customerwidget.cpp
     Widgets/administratorwidget.cpp
     Widgets/inputuserdialog.cpp
@@ -51,7 +50,6 @@ set(PROJECT_SOURCES
 set(PROJECT_HEADERS
     Widgets/appmenu.h
     Widgets/customerwidget.h
-    Widgets/inputcardialog.h
     Widgets/logindialog.h
     Widgets/administratorwidget.h
     Widgets/inputuserdialog.h

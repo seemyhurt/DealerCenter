@@ -8,11 +8,11 @@
 MainWidget::MainWidget(QWidget *parent)
     : QWidget{parent}
 {
-    resize(800, 600);
-    _currentLayout = QSharedPointer<QVBoxLayout>::create(this);
+    resize(900, 600);
+    auto layout = new QVBoxLayout(this);
 
     _menu = QSharedPointer<AppMenu>::create();
-    _currentLayout->setMenuBar(_menu.data());
+    layout->setMenuBar(_menu.data());
 
     _customerWidget = QSharedPointer<CustomerWidget>::create();
     _administratorWidget = QSharedPointer<AdministratorWidget>::create();
@@ -22,14 +22,14 @@ MainWidget::MainWidget(QWidget *parent)
     _managerWidget->hide();
     _customerWidget->hide();
 
-    _currentLayout->addWidget(_customerWidget.data());
-    _currentLayout->addWidget(_administratorWidget.data());
-    _currentLayout->addWidget(_managerWidget.data());
+    layout->addWidget(_customerWidget.data());
+    layout->addWidget(_administratorWidget.data());
+    layout->addWidget(_managerWidget.data());
 
     connect(_menu.data(), &AppMenu::menuInterfaceChanged, this, &MainWidget::handleNeedChangeInterface);
     connect(_customerWidget.data(), &CustomerWidget::newUserRegistred, this, &MainWidget::handleSetUserInterface);
 
-    setLayout(_currentLayout.data());
+    setLayout(layout);
 }
 
 void MainWidget::handleNeedChangeInterface(const QString & type)

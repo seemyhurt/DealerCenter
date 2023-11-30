@@ -15,6 +15,9 @@ public:
 
     bool loginManager();
 
+private slots:
+    void handleCreatePurchase();
+
 private:
     QSharedPointer<UserDBService> _service;
     QSharedPointer<ManufacturersModel> _manufacturersModel;
