@@ -64,7 +64,7 @@ struct UserData
     static UserData fromWidgetMap(const QVariantMap &variant)
     {
         UserData temp;
-        temp.id = variant.value("idr", 0).toLongLong();
+        temp.id = variant.value("id", 0).toLongLong();
         temp.phoneNumber = variant.value("Phone number").toLongLong();
         temp.firstName = variant.value("First name").toString();
         temp.lastName = variant.value("Last name").toString();
@@ -72,6 +72,16 @@ struct UserData
         temp.age = variant.value("Age").toInt();
         temp.password = variant.value("Password").toString();
         return temp;
+    }
+
+    static QStringList wigdetKeys()
+    {
+        return QStringList {"ID", "Phone number", "Firstname", "Lastname", "Surname", "Age", "Type", "Password"};
+    }
+
+    static QStringList dBKeys()
+    {
+        return QStringList {"id", "phoneNumber", "firstName", "lastName", "surname", "age", "type", "password"};
     }
 };
 

@@ -2,6 +2,7 @@
 #include "customerstablewidget.h"
 #include "manufacturerstablewidget.h"
 #include "managerstablewidget.h"
+#include "transporttablewidget.h"
 
 #include <QLabel>
 #include <QHBoxLayout>
@@ -12,17 +13,14 @@ AdministratorWidget::AdministratorWidget(QWidget *parent)
     : QWidget(parent),
     _tabs(QSharedPointer<QTabWidget>::create(this)),
     _customersWidget(QSharedPointer<CustomersTableWidget>::create(this)),
-    _manufacturersWidget(QSharedPointer<ManufacturersTableWidget>::create(this)),
-    _managersWidget(QSharedPointer<ManagersTableWidget>::create(this))
+    _manufacturersWidget(QSharedPointer<ManufacturersTableWidget>::create(true, this)),
+    _managersWidget(QSharedPointer<ManagersTableWidget>::create(this)),
+    _transportsWidget(QSharedPointer<TransportTableWidget>::create(this))
 {
-    QStringList lst;
-    lst << "Transport";
-    for (const auto &str : qAsConst(lst))
-        _tabs->addTab(new QLabel(str, _tabs.data()), str);
-
     _tabs->addTab(_customersWidget.data(), "Customers");
     _tabs->addTab(_manufacturersWidget.data(), "Manufacturers");
     _tabs->addTab(_managersWidget.data(), "Managers");
+    _tabs->addTab(_transportsWidget.data(), "Transport");
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(_tabs.data());

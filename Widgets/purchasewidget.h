@@ -16,6 +16,7 @@ struct ManufacturerData;
 
 class PurchaseWidget : public QWidget
 {
+    Q_OBJECT
 public:
     PurchaseWidget(QWidget * parent = nullptr);
 

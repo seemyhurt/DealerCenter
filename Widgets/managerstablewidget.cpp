@@ -12,20 +12,20 @@
 #include <QPushButton>
 #include <QMessageBox>
 
-static const QStringList ManagersInfo = {"ID", "Phone number", "Firstname", "Lastname", "Surname", "Age", "Type", "Password"};
-
 ManagersTableWidget::ManagersTableWidget(QWidget *parent)
     : QWidget(parent),
     _usersService(ServiceLocator::service<UserDBService>()),
     _managersModel(QSharedPointer<QStandardItemModel>::create())
 {
     auto tableView = new QTableView(this);
+    tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableView->verticalHeader()->setVisible(false);
 
     auto layout = new QVBoxLayout(this);
 
-    _managersModel->setHorizontalHeaderLabels(ManagersInfo);
+    auto keys = UserData::wigdetKeys();
+    _managersModel->setHorizontalHeaderLabels(keys);
 
     auto managers = _usersService->getAllManagers();
     for (const auto &user : qAsConst(managers))
@@ -33,13 +33,20 @@ ManagersTableWidget::ManagersTableWidget(QWidget *parent)
         auto userMap = user.toMap();
 
         QList<QStandardItem*> rowItems;
-        for (const auto &key : qAsConst(ManagersInfo))
-            rowItems << new QStandardItem(userMap[key].toString());;
+        for (const auto &key : qAsConst(keys))
+        {
+            auto item =  new QStandardItem(userMap.value(key).toString());
+            item->setTextAlignment(Qt::AlignCenter);
+            rowItems << item;
+        }
         _managersModel->appendRow(rowItems);
     }
 
     tableView->setModel(_managersModel.data());
-    tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+    tableView->setSortingEnabled(true);
+    int idColumnIndex = keys.indexOf("ID");
+    tableView->sortByColumn(idColumnIndex, Qt::AscendingOrder);
 
     auto buttonAdd = new QPushButton("Add new manager", this);
     connect(buttonAdd, &QPushButton::clicked, this, &ManagersTableWidget::handleNeedAddManager);
@@ -56,11 +63,16 @@ void ManagersTableWidget::handleNeedUpdateManagers(const UserData& data)
     if (data.type != QLatin1String("Manager"))
         return;
 
+    auto keys = UserData::wigdetKeys();
     auto userMap = data.toWidgetMap();
 
     QList<QStandardItem*> rowItems;
-    for (const auto &key : qAsConst(ManagersInfo))
-        rowItems << new QStandardItem(userMap[key].toString());;
+    for (const auto &key : qAsConst(keys))
+    {
+        auto item =  new QStandardItem(userMap.value(key).toString());
+        item->setTextAlignment(Qt::AlignCenter);
+        rowItems << item;
+    }
     _managersModel->appendRow(rowItems);
 }
 

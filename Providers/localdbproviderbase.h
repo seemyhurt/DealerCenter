@@ -13,7 +13,6 @@
 
 namespace DatabaseCommon {
 
-
 /**
  * @brief Структура описания колонки БД.
  */
@@ -135,7 +134,6 @@ private:
     QString _table{};
     QVector<LocalDBColumn> _columns{};
     QString _connection{};
-    quint64 _lastInsertID = 0;
     LocalDBStatus _status = LocalDBStatus::Unknown;
 };
 
@@ -187,6 +185,7 @@ QVector<T> LocalDBProviderBase::getAllDBElements(const QSqlDatabase& db,
     while (query.next())
     {
         T data;
+        auto vaue = query.value(1);
         Detail::getMembers(data, query, indArr.data(), members.second...);
         retData.push_back(std::move(data));
     }

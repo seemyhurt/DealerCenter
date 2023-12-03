@@ -12,7 +12,7 @@ class ManufacturersTableWidget : public QWidget
 {
     Q_OBJECT
 public:
-    ManufacturersTableWidget(QWidget * parent = nullptr);
+    ManufacturersTableWidget(bool enableControl, QWidget * parent = nullptr);
 
 private slots:
     void handleNeedAddManufacturer();

@@ -24,7 +24,44 @@ quint64 TransportDBService::tableSize() const
 
 QSqlError TransportDBService::addEntry(QVariantMap &values)
 {
-    return {};
+    auto data = TransportData::fromDBMap(values);
+    auto modelKey = generateTransortKey(data);
+    auto knownTransport = _uniqueTransport.contains(modelKey);
+
+    auto id = knownTransport ? _uniqueTransport[modelKey].id
+                            : data.id;
+
+    if (_storage.elements().contains(id) || knownTransport)
+    {
+        _uniqueTransport[modelKey].count += data.count;
+        values["id"] = id;
+        data.id = id;
+        //TODO изменение данных в модели
+        return _storage.addEntry(_provider.data(), values, true, data);
+    }
+
+    id = _storage.size() + 1;
+    values["id"] = id;
+    data.id = id;
+    _uniqueTransport.insert(modelKey, data);
+
+    auto err = _storage.addEntry(_provider.data(), values, false, data);
+    if (err.type() == QSqlError::NoError)
+        emit transportAdded(data);
+    return err;
+}
+
+QString TransportDBService::generateTransortKey(const TransportData &data)
+{
+    return QStringLiteral("%1%2%3%4%5%6").arg(data.brand).arg(data.model).arg(data.year).arg(data.condition).arg(data.type).arg(data.guaranteePeriod);
+}
+
+QVariantList TransportDBService::getAllTransport()
+{
+    QVariantList result;
+    for (const auto & element : qAsConst(_storage.elements()))
+        result << element.toWidgetMap();
+    return result;
 }
 
 QSqlError TransportDBService::removeEntry(quint64 id)
@@ -48,6 +85,8 @@ void TransportDBService::handleDbConnectionChange(DatabaseCommon::LocalDBStatus 
 
 void TransportDBService::selectDataFromStorage()
 {
+    for (const auto &element : qAsConst(_storage.elements()))
+        _uniqueTransport.insert(generateTransortKey(element), element);
 }
 
 QString TransportDBService::baseKey()

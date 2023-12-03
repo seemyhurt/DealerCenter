@@ -3,22 +3,26 @@
 #include "../Services/servicelocator.h"
 #include "../Common/manufacturerdata.h"
 
-static const QStringList ManufacturersInfo = {"ID", "Name", "Delivery time, days", "Guarantee period, years", "Car brand", "Transport type"};
-
 ManufacturersModel::ManufacturersModel(QObject * parent) :
     QStandardItemModel(parent),
     _manufacturersService(ServiceLocator::service<ManufacturerDBService>())
 {
-    setHorizontalHeaderLabels(ManufacturersInfo);
+    auto keys = ManufacturerData::wigdetKeys();
+    setHorizontalHeaderLabels(keys);
 
     auto manufacturers = _manufacturersService->getAllManufacturers();
+
     for (const auto &manufacturer : qAsConst(manufacturers))
     {
         auto manufacturerMap = manufacturer.toMap();
 
         QList<QStandardItem*> rowItems;
-        for (const auto &key : qAsConst(ManufacturersInfo))
-            rowItems << new QStandardItem(manufacturerMap[key].toString());;
+        for (const auto &key : qAsConst(keys))
+        {
+            auto item =  new QStandardItem(manufacturerMap.value(key).toString());
+            item->setTextAlignment(Qt::AlignCenter);
+            rowItems << item;
+        }
         appendRow(rowItems);
     }
 
@@ -27,11 +31,16 @@ ManufacturersModel::ManufacturersModel(QObject * parent) :
 
 void ManufacturersModel::handleNeedUpdateManufacturers(const ManufacturerData& data)
 {
+    auto keys = ManufacturerData::wigdetKeys();
     auto manufacturerMap = data.toWidgetMap();
 
     QList<QStandardItem*> rowItems;
-    for (const auto &key : qAsConst(ManufacturersInfo))
-        rowItems << new QStandardItem(manufacturerMap[key].toString());;
+    for (const auto & key : qAsConst(keys))
+    {
+        auto item =  new QStandardItem(manufacturerMap.value(key).toString());
+        item->setTextAlignment(Qt::AlignCenter);
+        rowItems << item;
+    }
     appendRow(rowItems);
 }
 

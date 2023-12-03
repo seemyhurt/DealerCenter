@@ -25,6 +25,8 @@ public:
      */
     static QString baseKey();
 
+    QVariantList getAllTransport();
+
 protected slots:
     /**
      * @brief Реализация изменения статуса БД.
@@ -32,12 +34,18 @@ protected slots:
      */
     void handleDbConnectionChange(DatabaseCommon::LocalDBStatus status);
 
+signals:
+    void transportAdded(const TransportData &data);
+
 private:
     void selectDataFromStorage();
+
+    QString generateTransortKey(const TransportData &data);
 
 private:
     DatabaseCommon::LocalDBStorage<TransportData> _storage;
     QSharedPointer<TransportDBProvider> _provider;
+    QHash<QString, TransportData> _uniqueTransport;
 
 };
 

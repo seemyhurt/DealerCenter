@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QVariantMap>
+#include  <QDateTime>
 
 /**
  * @brief Структура машины из базы данных.
@@ -20,6 +21,7 @@ struct TransportData
     QString type;           ///< Тип транспортного средства
     bool inStock;           ///< Сейчас в наличии
     quint64 receiptDate;    ///< Дата поступления
+    int guaranteePeriod;    ///< Период гарантии
 
     QVariantMap toDBMap() const
     {
@@ -33,7 +35,8 @@ struct TransportData
             {"condition", condition},
             {"type", type},
             {"inStock", inStock},
-            {"receiptDate", receiptDate}
+            {"receiptDate", receiptDate},
+            {"guaranteePeriod", guaranteePeriod}
         };
     }
 
@@ -50,21 +53,35 @@ struct TransportData
         temp.type = variant.value("type").toString();
         temp.inStock = variant.value("inStock").toBool();
         temp.receiptDate = variant.value("receiptDate").toLongLong();
+        temp.guaranteePeriod = variant.value("guaranteePeriod").toInt();
         return temp;
     }
 
     QVariantMap toWidgetMap() const
     {
         return QVariantMap {
-            {"id", id},
+            {"ID", id},
             {"Brand", brand},
             {"Model", model},
             {"Price", price},
             {"Year", year},
             {"Count", count},
             {"Condition", condition},
-            {"Type", type}
+            {"Type", type},
+            {"In stock", inStock ? "In stock" : "Ordered"},
+            {"Receipt date", QDateTime::fromMSecsSinceEpoch(receiptDate).toString("dd.MM.yyyy HH:mm")},
+            {"Guarantee period", guaranteePeriod}
         };
+    }
+
+    static QStringList wigdetKeys()
+    {
+        return QStringList {"ID", "Brand", "Model", "Price", "Year", "Count", "Condition", "Type", "In stock", "Receipt date", "Guarantee period"};
+    }
+
+    static QStringList DBKeys()
+    {
+        return QStringList {"id", "brand", "model", "price", "year", "count", "condition", "type", "inStock", "receiptDate", "guaranteePeriod"};
     }
 };
 

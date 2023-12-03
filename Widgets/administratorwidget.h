@@ -10,6 +10,7 @@ class QStandardItemModel;
 class CustomersTableWidget;
 class ManufacturersTableWidget;
 class ManagersTableWidget;
+class TransportTableWidget;
 
 class AdministratorWidget : public QWidget
 {
@@ -22,6 +23,7 @@ private:
     QSharedPointer<CustomersTableWidget> _customersWidget;
     QSharedPointer<ManufacturersTableWidget> _manufacturersWidget;
     QSharedPointer<ManagersTableWidget> _managersWidget;
+    QSharedPointer<TransportTableWidget> _transportsWidget;
 };
 
 #endif // ADMINISTRATORWIDGET_H

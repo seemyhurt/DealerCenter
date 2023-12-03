@@ -38,6 +38,16 @@ struct PurchaseData
         temp.date = variant.value("date").toLongLong();
         return temp;
     }
+
+    static QStringList wigdetKeys()
+    {
+        return QStringList {"ID", "User ID", "Transport ID", "Count", "Date"};
+    }
+
+    static QStringList DBKeys()
+    {
+        return QStringList {"id", "userId", "transportId", "count", "date"};
+    }
 };
 
 #endif // PURCHASEDATA_H

@@ -14,8 +14,8 @@ struct ManufacturerData
     QString name;           ///< название производителя
     int deliveryTime;       ///< сроки поставки
     int guaranteePeriod;    ///< срок гарантии на поставляемые товары
-    QString carBrand;       ///< брэнд выпускаемых транспортных средств
-    QString type;           ///< тип выпускаемых транспортных средств
+    QString transportBrand; ///< брэнд выпускаемых транспортных средств
+    QString type;           ///< тип выпускаемых транспортных средств 
 
 
     QVariantMap toDBMap() const
@@ -25,7 +25,7 @@ struct ManufacturerData
             {"name", name},
             {"deliveryTime", deliveryTime},
             {"guaranteePeriod", guaranteePeriod},
-            {"carBrand", carBrand},
+            {"transportBrand", transportBrand},
             {"type", type}
         };
     }
@@ -37,7 +37,7 @@ struct ManufacturerData
         temp.name = variant.value("name").toString();
         temp.deliveryTime = variant.value("deliveryTime").toInt();
         temp.guaranteePeriod = variant.value("guaranteePeriod").toInt();
-        temp.carBrand = variant.value("carBrand").toString();
+        temp.transportBrand = variant.value("transportBrand").toString();
         temp.type = variant.value("type").toString();
         return temp;
     }
@@ -49,7 +49,7 @@ struct ManufacturerData
             {"Name", name},
             {"Delivery time, days", deliveryTime},
             {"Guarantee period, years", guaranteePeriod},
-            {"Car brand", carBrand},
+            {"Transport brand", transportBrand},
             {"Transport type", type}
         };
     }
@@ -61,9 +61,19 @@ struct ManufacturerData
         temp.name = variant.value("Name").toString();
         temp.deliveryTime = variant.value("Delivery time, days").toInt();
         temp.guaranteePeriod = variant.value("Guarantee period, years").toInt();
-        temp.carBrand = variant.value("Car brand").toString();
+        temp.transportBrand = variant.value("Transport brand").toString();
         temp.type = variant.value("Transport type").toString();
         return temp;
+    }
+
+    static QStringList wigdetKeys()
+    {
+        return QStringList {"ID", "Name", "Delivery time, days", "Guarantee period, years", "Transport brand", "Transport type"};
+    }
+
+    static QStringList DBKeys()
+    {
+        return QStringList {"id", "name", "deliveryTime", "guaranteePeriod", "transportBrand", "type"};
     }
 };
 

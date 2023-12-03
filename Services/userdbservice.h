@@ -1,10 +1,10 @@
 #ifndef USERDBSERVICE_H
 #define USERDBSERVICE_H
 
-#include "ilocaldbservicebase.h"
 #include "../Providers/localbbstorage.h"
-#include <QSharedPointer>
 #include "../Common/userdata.h"
+#include "ilocaldbservicebase.h"
+#include <QSharedPointer>
 
 class UserDBProvider;
 

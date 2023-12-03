@@ -5,7 +5,8 @@
 #include <QSharedPointer>
 
 class UserDBService;
-class ManufacturersModel;
+class ManufacturersTableWidget;
+class TransportTableWidget;
 
 class ManagersWidget : public QWidget
 {
@@ -20,7 +21,8 @@ private slots:
 
 private:
     QSharedPointer<UserDBService> _service;
-    QSharedPointer<ManufacturersModel> _manufacturersModel;
+    QSharedPointer<ManufacturersTableWidget> _manufacturersWidget;
+    QSharedPointer<TransportTableWidget> _transportsWidget;
 };
 
 #endif // MANAGERSWIDGET_H

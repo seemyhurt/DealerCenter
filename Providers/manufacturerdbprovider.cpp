@@ -11,7 +11,7 @@ ManufacturerDBProvider::ManufacturerDBProvider(QObject* parent) :
                                                    {"name"},
                                                    {"deliveryTime"},
                                                    {"guaranteePeriod"},
-                                                   {"carBrand"},
+                                                   {"transportBrand"},
                                                    {"type"}
                                                    };
 
@@ -31,7 +31,7 @@ QVector<ManufacturerData> ManufacturerDBProvider::getManufacturers()
                           make_pair("name", &MD::name),
                           make_pair("deliveryTime", &MD::deliveryTime),
                           make_pair("guaranteePeriod", &MD::guaranteePeriod),
-                          make_pair("carBrand", &MD::carBrand),
+                          make_pair("transportBrand", &MD::transportBrand),
                           make_pair("type", &MD::type));
 }
 

@@ -22,7 +22,6 @@ quint64 UserDBService::tableSize() const
 
 QSqlError UserDBService::addEntry(QVariantMap &values)
 {
-
     auto data = UserData::fromDBMap(values);
     auto knownNumber = isUserExist(data.phoneNumber);
 

@@ -59,10 +59,10 @@ PurchaseWidget::PurchaseWidget(QWidget *parent) :
     connect(_type, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleTypeChanged);
     connect(_brand, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleBrandChanged);
     connect(_condition, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleConditionChanged);
-    connect(_manufacturersService.data(), &ManufacturerDBService::manufacturerAdded, this, &PurchaseWidget::handleCreatePurchase);
+    connect(_manufacturersService.data(), &ManufacturerDBService::manufacturerAdded, this, &PurchaseWidget::handleManufacturerAdded);
 
     auto buttonBuy = new QPushButton("Buy new car", this);
-    connect(buttonBuy, &QPushButton::clicked, this, &PurchaseWidget::needCreatePurchase);
+    connect(buttonBuy, &QPushButton::clicked, this, &PurchaseWidget::handleCreatePurchase);
 
     QGridLayout * layout = new QGridLayout(this);
 
@@ -116,9 +116,9 @@ void PurchaseWidget::handleConditionChanged(const QString &condition)
 
 void PurchaseWidget::handleManufacturerAdded(const ManufacturerData & data)
 {
-    auto index = _brand->findText(data.carBrand);
+    auto index = _brand->findText(data.transportBrand);
     if (index == -1)
-        _brand->addItem(data.carBrand);
+        _brand->addItem(data.transportBrand);
     else if (index == _brand->currentIndex())
         _manufacturer->addItem(data.name);
 }
@@ -129,9 +129,10 @@ void PurchaseWidget::handleCreatePurchase()
     auto manufacturer = _manufacturersService->getManufacturerInfo(_manufacturer->currentText());
 
     TransportData data;
-    data.brand = manufacturer.carBrand;
+    data.brand = manufacturer.transportBrand;
     data.model = _model->text();
-    data.price = 1000; //TODO + гарантия
+    data.price = 1000; //TODO
+    data.guaranteePeriod = manufacturer.guaranteePeriod;
     data.year = _year->text().toInt();
     data.count = _count->text().toInt();
     data.condition = _condition->currentText();
@@ -140,5 +141,6 @@ void PurchaseWidget::handleCreatePurchase()
     data.receiptDate = QDateTime::currentDateTime()
                            .addDays(manufacturer.deliveryTime).toMSecsSinceEpoch();
 
-
+    auto map = data.toDBMap();
+    _transportService->addEntry(map);
 }

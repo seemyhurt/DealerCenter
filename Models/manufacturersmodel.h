@@ -8,6 +8,7 @@ struct ManufacturerData;
 
 class ManufacturersModel : public QStandardItemModel
 {
+    Q_OBJECT
 public:
     ManufacturersModel(QObject * parent = nullptr);
 

@@ -11,24 +11,31 @@
 #include <QPushButton>
 #include <QMessageBox>
 
-ManufacturersTableWidget::ManufacturersTableWidget(QWidget *parent)
+ManufacturersTableWidget::ManufacturersTableWidget(bool enableControl, QWidget *parent)
     : QWidget(parent),
     _manufacturersModel(QSharedPointer<ManufacturersModel>::create())
 {
     auto tableView = new QTableView(this);
     tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
     tableView->verticalHeader()->setVisible(false);
+    tableView->setSortingEnabled(true);
+    tableView->sortByColumn(0, Qt::AscendingOrder);
 
     auto layout = new QVBoxLayout(this);
 
     tableView->setModel(_manufacturersModel.data());
     tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-    auto buttonAdd = new QPushButton("Add new manufacturer", this);
-    connect(buttonAdd, &QPushButton::clicked, this, &ManufacturersTableWidget::handleNeedAddManufacturer);
-
     layout->addWidget(tableView);
-    layout->addWidget(buttonAdd);
+
+    if (enableControl)
+    {
+        auto buttonAdd = new QPushButton("Add new manufacturer", this);
+        connect(buttonAdd, &QPushButton::clicked, this, &ManufacturersTableWidget::handleNeedAddManufacturer);
+        layout->addWidget(buttonAdd);
+    }
+
     setLayout(layout);
 }
 

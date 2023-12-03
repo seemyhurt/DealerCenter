@@ -26,6 +26,7 @@ set(PROJECT_SOURCES
     Widgets/managerstablewidget.cpp
     Widgets/managerswidget.cpp
     Widgets/purchasewidget.cpp
+    Widgets/transporttablewidget.cpp
 
     Providers/transportdbprovider.cpp
     Providers/localdbproviderbase.cpp
@@ -42,6 +43,7 @@ set(PROJECT_SOURCES
     Services/purchasesdbservice.cpp
 
     Models/manufacturersmodel.cpp
+    Models/transportsmodel.cpp
 
     iinputvalidator.cpp
     main.cpp
@@ -61,6 +63,7 @@ set(PROJECT_HEADERS
     Widgets/managerstablewidget.h
     Widgets/managerswidget.h
     Widgets/purchasewidget.h
+    Widgets/transporttablewidget.h
 
     Providers/transportdbprovider.h
     Providers/iprovider.h
@@ -85,13 +88,14 @@ set(PROJECT_HEADERS
     Common/purchasedata.h
 
     Models/manufacturersmodel.h
+    Models/transportsmodel.h
 
     iinputvalidator.h
 )
 
 add_executable(DilerCenter
     ${PROJECT_HEADERS}
-    ${PROJECT_SOURCES}    
+    ${PROJECT_SOURCES}
 )
 
 target_link_libraries(DilerCenter PRIVATE Qt${QT_VERSION_MAJOR}::Widgets

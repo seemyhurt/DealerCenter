@@ -41,8 +41,8 @@ QSqlError ManufacturerDBService::addEntry(QVariantMap &values)
     auto id = _storage.size() + 1;
     values["id"] = id;
     data.id = id;
-    _namesToBrand[data.carBrand].push_back(data.name);
-    _brandsToType[data.type].insert(data.carBrand);
+    _namesToBrand[data.transportBrand].push_back(data.name);
+    _brandsToType[data.type].insert(data.transportBrand);
     _manufacturers.insert(data.name, data);
 
     auto err = _storage.addEntry(_provider.data(), values, false, data);
@@ -74,8 +74,8 @@ void ManufacturerDBService::selectDataFromStorage()
 {
     for (const auto & element : qAsConst(_storage.elements()))
     {
-        _namesToBrand[element.carBrand] << element.name;
-        _brandsToType[element.type].insert(element.carBrand);
+        _namesToBrand[element.transportBrand] << element.name;
+        _brandsToType[element.type].insert(element.transportBrand);
         _manufacturers.insert(element.name, element);
     }
 }
