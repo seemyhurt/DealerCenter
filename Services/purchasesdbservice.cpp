@@ -24,7 +24,18 @@ quint64 PurchasesDBService::tableSize() const
 
 QSqlError PurchasesDBService::addEntry(QVariantMap &values)
 {
-    return {};
+    auto data = PurchaseData::fromDBMap(values);
+
+    auto id = _storage.size() + 1;
+    values["id"] = id;
+    data.id = id;
+
+    _purchasesbyUser[data.userId].push_back(data);
+
+    auto err = _storage.addEntry(_provider.data(), values, false, data);
+    if (err.type() == QSqlError::NoError)
+        emit purchaseAdded(data);
+    return err;
 }
 
 QSqlError PurchasesDBService::removeEntry(quint64 id)
@@ -48,9 +59,18 @@ void PurchasesDBService::handleDbConnectionChange(DatabaseCommon::LocalDBStatus 
 
 void PurchasesDBService::selectDataFromStorage()
 {
+    for (const auto &element : qAsConst(_storage.elements()))
+    {
+        _purchasesbyUser[element.userId].push_back(element);
+    }
 }
 
 QString PurchasesDBService::baseKey()
 {
     return "PurchasesDBService";
+}
+
+QVector<PurchaseData> PurchasesDBService::getPurchasesByUser(int userId)
+{
+    return _purchasesbyUser.value(userId);
 }

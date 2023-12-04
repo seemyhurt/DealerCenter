@@ -27,6 +27,7 @@ set(PROJECT_SOURCES
     Widgets/managerswidget.cpp
     Widgets/purchasewidget.cpp
     Widgets/transporttablewidget.cpp
+    Widgets/purchasestablewidget.cpp
 
     Providers/transportdbprovider.cpp
     Providers/localdbproviderbase.cpp
@@ -44,6 +45,7 @@ set(PROJECT_SOURCES
 
     Models/manufacturersmodel.cpp
     Models/transportsmodel.cpp
+    Models/purchasesmodel.cpp
 
     iinputvalidator.cpp
     main.cpp
@@ -64,6 +66,7 @@ set(PROJECT_HEADERS
     Widgets/managerswidget.h
     Widgets/purchasewidget.h
     Widgets/transporttablewidget.h
+    Widgets/purchasestablewidget.h
 
     Providers/transportdbprovider.h
     Providers/iprovider.h
@@ -89,6 +92,7 @@ set(PROJECT_HEADERS
 
     Models/manufacturersmodel.h
     Models/transportsmodel.h
+    Models/purchasesmodel.h
 
     iinputvalidator.h
 )

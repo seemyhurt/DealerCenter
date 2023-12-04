@@ -10,16 +10,16 @@ TransportsModel::TransportsModel(QObject * parent) :
     auto keys = TransportData::wigdetKeys();
     setHorizontalHeaderLabels(keys);
 
-    auto manufacturers = _transportService->getAllTransport();
+    auto transports = _transportService->getAllTransport();
 
-    for (const auto &manufacturer : qAsConst(manufacturers))
+    for (const auto &transport : qAsConst(transports))
     {
-        auto manufacturerMap = manufacturer.toMap();
+        auto transportMap = transport.toMap();
 
         QList<QStandardItem*> rowItems;
         for (const auto &key : qAsConst(keys))
         {
-            auto item =  new QStandardItem(manufacturerMap.value(key).toString());
+            auto item =  new QStandardItem(transportMap.value(key).toString());
             item->setTextAlignment(Qt::AlignCenter);
             rowItems << item;
         }

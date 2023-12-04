@@ -33,7 +33,8 @@ signals:
 
 public:
     bool isUserExist(quint64 number);
-    UserData getUserInfo(quint64 number);
+    UserData getUserByNumber(quint64 number);
+    UserData getUserById(int id);
     bool isPasswordCorrect(quint64 number, const QString & password);
 
 protected slots:

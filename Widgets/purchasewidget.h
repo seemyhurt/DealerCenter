@@ -29,9 +29,6 @@ private:
     void handleManufacturerAdded(const ManufacturerData & data);
     void handleCreatePurchase();
 
-signals:
-    void needCreatePurchase();
-
 private:
     QSharedPointer<ManufacturerDBService> _manufacturersService;
     QSharedPointer<UserDBService> _usersService;

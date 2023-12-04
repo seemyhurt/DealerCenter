@@ -103,7 +103,12 @@ QStringList ManufacturerDBService::getManufacturersByType(const QString & type)
     return result;
 }
 
-ManufacturerData ManufacturerDBService::getManufacturerInfo(const QString & name)
+ManufacturerData ManufacturerDBService::getManufacturerById(int id)
+{
+    return _storage.elements().value(id);
+}
+
+ManufacturerData ManufacturerDBService::getManufacturerByName(const QString & name)
 {
     return _manufacturers.value(name);
 }

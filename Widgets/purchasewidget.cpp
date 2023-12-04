@@ -6,6 +6,7 @@
 #include "../Services/transportdbservice.h"
 #include "../Common/manufacturerdata.h"
 #include "../Common/transportdata.h"
+#include "../Common/purchasedata.h"
 
 #include <QComboBox>
 #include <QPushButton>
@@ -125,8 +126,8 @@ void PurchaseWidget::handleManufacturerAdded(const ManufacturerData & data)
 
 void PurchaseWidget::handleCreatePurchase()
 {
-    auto user = _usersService->getUserInfo(_currentUserNumber);
-    auto manufacturer = _manufacturersService->getManufacturerInfo(_manufacturer->currentText());
+    auto user = _usersService->getUserByNumber(_currentUserNumber);
+    auto manufacturer = _manufacturersService->getManufacturerByName(_manufacturer->currentText());
 
     TransportData data;
     data.brand = manufacturer.transportBrand;
@@ -141,6 +142,16 @@ void PurchaseWidget::handleCreatePurchase()
     data.receiptDate = QDateTime::currentDateTime()
                            .addDays(manufacturer.deliveryTime).toMSecsSinceEpoch();
 
+    PurchaseData purchase;
+    purchase.transportId = 0;
+    purchase.count = _count->text().toInt();
+    purchase.manufacturerId = manufacturer.id;
+    purchase.userId = user.id;
+    purchase.date = QDateTime::currentDateTime().toMSecsSinceEpoch();
+
     auto map = data.toDBMap();
     _transportService->addEntry(map);
+
+    auto purchaseMap = purchase.toDBMap();
+    _purchasesService->addEntry(purchaseMap);
 }

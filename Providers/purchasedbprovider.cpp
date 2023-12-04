@@ -11,6 +11,7 @@ PurchaseDBProvider::PurchaseDBProvider(QObject* parent) :
                                                     {"id"},
                                                     {"userId"},
                                                     {"transportId"},
+                                                    {"manufacturerId"},
                                                     {"count"},
                                                     {"date"}
     };
@@ -30,6 +31,7 @@ QVector<PurchaseData> PurchaseDBProvider::getPurchases()
     return getAllElements(make_pair("id", &PD::id),
                           make_pair("userId", &PD::userId),
                           make_pair("transportId", &PD::transportId),
+                          make_pair("manufacturerId", &PD::manufacturerId),
                           make_pair("count", &PD::count),
                           make_pair("date", &PD::date));
 }

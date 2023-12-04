@@ -27,6 +27,8 @@ public:
 
     QVariantList getAllTransport();
 
+    TransportData getTransportById(int id);
+
 protected slots:
     /**
      * @brief Реализация изменения статуса БД.
@@ -46,7 +48,6 @@ private:
     DatabaseCommon::LocalDBStorage<TransportData> _storage;
     QSharedPointer<TransportDBProvider> _provider;
     QHash<QString, TransportData> _uniqueTransport;
-
 };
 
 #endif // TRANSPORTDBSERVICE_H

@@ -14,6 +14,7 @@ struct PurchaseData
     int id;             ///< Идентификатор записи
     int userId;         ///< Идентификатор пользователя
     int transportId;    ///< Идентификатор транспортного средства
+    int manufacturerId; ///< Идентификатор производителя
     int count;          ///< Количество купленного товара
     quint64 date;       ///< Дата и время покупки
 
@@ -23,8 +24,21 @@ struct PurchaseData
             {"id", id},
             {"userId", userId},
             {"transportId", transportId},
+            {"manufacturerId", manufacturerId},
             {"count", count},
             {"date", date},
+        };
+    }
+
+    QVariantMap toWidgetMap() const
+    {
+        return QVariantMap {
+            {"ID", id},
+            {"User ID", userId},
+            {"Transport ID", transportId},
+            {"Manufacturer ID", manufacturerId},
+            {"Count", count},
+            {"Date", date},
         };
     }
 
@@ -34,6 +48,7 @@ struct PurchaseData
         temp.id = variant.value("id").toInt();
         temp.userId = variant.value("userId").toInt();
         temp.transportId = variant.value("transportId").toInt();
+        temp.manufacturerId = variant.value("manufacturerId").toInt();
         temp.count = variant.value("count").toInt();
         temp.date = variant.value("date").toLongLong();
         return temp;
@@ -41,12 +56,12 @@ struct PurchaseData
 
     static QStringList wigdetKeys()
     {
-        return QStringList {"ID", "User ID", "Transport ID", "Count", "Date"};
+        return QStringList {"ID", "User ID", "Transport ID", "Manufacturer ID", "Count", "Date"};
     }
 
     static QStringList DBKeys()
     {
-        return QStringList {"id", "userId", "transportId", "count", "date"};
+        return QStringList {"id", "userId", "transportId", "manufacturerId", "count", "date"};
     }
 };
 

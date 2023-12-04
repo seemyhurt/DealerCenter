@@ -64,6 +64,11 @@ QVariantList TransportDBService::getAllTransport()
     return result;
 }
 
+TransportData TransportDBService::getTransportById(int id)
+{
+    return _storage.elements().value(id);
+}
+
 QSqlError TransportDBService::removeEntry(quint64 id)
 {
     return _storage.removeEntry(_provider.data(), id);

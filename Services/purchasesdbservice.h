@@ -25,6 +25,8 @@ public:
      */
     static QString baseKey();
 
+    QVector<PurchaseData> getPurchasesByUser(int userId);
+
 protected slots:
     /**
      * @brief Реализация изменения статуса БД.
@@ -32,12 +34,17 @@ protected slots:
      */
     void handleDbConnectionChange(DatabaseCommon::LocalDBStatus status);
 
+signals:
+    void purchaseAdded(const PurchaseData &data);
+
 private:
     void selectDataFromStorage();
 
 private:
     DatabaseCommon::LocalDBStorage<PurchaseData> _storage;
     QSharedPointer<PurchaseDBProvider> _provider;
+
+    QHash<int, QVector<PurchaseData>> _purchasesbyUser;
 
 };
 

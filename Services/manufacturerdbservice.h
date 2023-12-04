@@ -30,7 +30,8 @@ public:
     QStringList getManufacturersByBrand(const QString & brand);
     QStringList getAvailableTypes();
     QStringList getManufacturersByType(const QString & type);
-    ManufacturerData getManufacturerInfo(const QString & name);
+    ManufacturerData getManufacturerByName(const QString & name);
+    ManufacturerData getManufacturerById(int id);
 
 signals:
     void manufacturerAdded(const ManufacturerData & data);

@@ -4,6 +4,7 @@
 #include "logindialog.h"
 #include "transporttablewidget.h"
 #include "manufacturerstablewidget.h"
+#include "purchasestablewidget.h"
 
 #include "../Services/servicelocator.h"
 #include "../Services/userdbservice.h"
@@ -25,14 +26,15 @@ ManagersWidget::ManagersWidget(QWidget *parent)
     : QWidget(parent),
     _service(ServiceLocator::service<UserDBService>()),
     _manufacturersWidget(QSharedPointer<ManufacturersTableWidget>::create(false)),
-    _transportsWidget(QSharedPointer<TransportTableWidget>::create())
+    _transportsWidget(QSharedPointer<TransportTableWidget>::create()),
+    _purchasesWidget(QSharedPointer<PurchaseWidget>::create(this)),
+    _purchasesTableWidget(QSharedPointer<PurchasesTableWidget>::create(this))
 {
     auto groupPurchase = new QGroupBox("Purchase form: ", this);
     auto groupManufacturers = new QGroupBox("Manufacturers: ", this);
     auto groupTransports = new QGroupBox("Transports: ", this);
+    auto groupPurchases = new QGroupBox("My purchases: ", this);
 
-    auto purchaseWidget = new PurchaseWidget(this);
-    connect(purchaseWidget, &PurchaseWidget::needCreatePurchase, this, &ManagersWidget::handleCreatePurchase);
     auto layout = new QHBoxLayout(this);
 
     auto layoutManufacturers = new QVBoxLayout(this);
@@ -43,14 +45,22 @@ ManagersWidget::ManagersWidget(QWidget *parent)
     layoutTransport->addWidget(_transportsWidget.data());
     groupTransports->setLayout(layoutTransport);
 
+    auto layoutPurchase = new QVBoxLayout(this);
+    layoutPurchase->addWidget(_purchasesTableWidget.data());
+    groupPurchases->setLayout(layoutPurchase);
+
     auto layoutLeft = new QVBoxLayout(this);
     layoutLeft->addWidget(groupManufacturers);
     layoutLeft->addWidget(groupTransports);
 
-    groupPurchase->setLayout(purchaseWidget->layout());
+    auto layoutRight = new QVBoxLayout(this);
+    layoutRight->addWidget(groupPurchase);
+    layoutRight->addWidget(groupPurchases);
+
+    groupPurchase->setLayout(_purchasesWidget.data()->layout());
 
     layout->addLayout(layoutLeft, 6);
-    layout->addWidget(groupPurchase, 1);
+    layout->addLayout(layoutRight, 3);
     setLayout(layout);
 }
 
@@ -75,10 +85,6 @@ bool ManagersWidget::loginManager()
     }
 
     QMessageBox::information(nullptr, "Success", "You have successfully logged in!");
+    _purchasesWidget->setCurrentUser(loginInfo.first);
     return true;
-}
-
-void ManagersWidget::handleCreatePurchase()
-{
-
 }

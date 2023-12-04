@@ -56,9 +56,14 @@ bool UserDBService::isUserExist(quint64 number)
     return _phoneToUser.contains(number);
 }
 
-UserData UserDBService::getUserInfo(quint64 number)
+UserData UserDBService::getUserByNumber(quint64 number)
 {
     return _phoneToUser.value(number);
+}
+
+UserData UserDBService::getUserById(int id)
+{
+    return _storage.elements().value(id);
 }
 
 bool UserDBService::isPasswordCorrect(quint64 number, const QString & password)
