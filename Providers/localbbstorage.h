@@ -38,7 +38,7 @@ public:
      * @return Статус ошибки выполненной команды.
      */
     QSqlError addEntry(LocalDBProviderBase* provider,
-                       QVariantMap& values, bool needUpdate,
+                       QVariantMap& values,
                        const T &value);
 
     /**
@@ -53,6 +53,16 @@ public:
     quint64 size() const;
 
     /**
+     * @brief Вернуть максимальное значение ID в БД
+     */
+    int maxId() const;
+
+    /**
+     * @brief Вернуть ID последнего добавленного элемента БД
+     */
+    int lastInsertId() const;
+
+    /**
      * @brief Таблица основных элементов.
      * @return Ссылка на таблицу.
      */
@@ -60,8 +70,9 @@ public:
 
 private:
     QHash<quint64, T> _elements;
+    int _maxId = 0;
+    int _lastInsertId = 0;
 };
-
 
 
 // impl
@@ -70,7 +81,10 @@ void LocalDBStorage<T>::constructElements(QVector<T>&& main)
 {
     clear();
     for (auto& el : main)
+    {
         _elements.insert(el.id, std::move(el));
+        _maxId = std::max(_maxId, el.id);
+    }
 }
 
 template<typename T>
@@ -81,33 +95,67 @@ QSqlError LocalDBStorage<T>::removeEntry(LocalDBProviderBase* provider, quint64 
         return ret;
 
     _elements.remove(id);
+
+    if (_maxId == id)
+    {
+        int maxId = 0;
+        for (const auto &el : qAsConst(_elements))
+            maxId = std::max(maxId, el.id);
+        _maxId = maxId;
+    }
+    if (_lastInsertId == id)
+        _lastInsertId = 0;
+
     return ret;
 }
 
 template<typename T>
 QSqlError LocalDBStorage<T>::addEntry(LocalDBProviderBase* provider,
-                                      QVariantMap& values, bool needUpdate,
+                                      QVariantMap& valuesMap,
                                       const T & value)
 {
-    auto id = values["id"].toInt();
-    _elements[id] = value;
+    auto id = valuesMap["id"].toInt();
 
-    if (!needUpdate)
-        return provider->addElement(values);
+    QSqlError ret;
+    if (_elements.contains(id))
+        ret = provider->modifyElement(id, valuesMap);
     else
-        return provider->modifyElement(id, values);
+        ret = provider->addElement(valuesMap);
+
+    if (ret.type() != QSqlError::ErrorType::NoError)
+        return ret;
+
+    _elements[id] = value;
+    _maxId = std::max(_maxId, id);
+    _lastInsertId = id;
+
+    return ret;
 }
 
 template<typename T>
 void LocalDBStorage<T>::clear()
 {
     _elements.clear();
+    _maxId = 0;
+    _lastInsertId = 0;
 }
 
 template<typename T>
 quint64 LocalDBStorage<T>::size() const
 {
     return _elements.size();
+}
+
+template<typename T>
+int LocalDBStorage<T>::maxId() const
+{
+    return _maxId;
+}
+
+template<typename T>
+int LocalDBStorage<T>::lastInsertId() const
+{
+    return _lastInsertId;
 }
 
 }

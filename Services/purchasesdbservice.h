@@ -26,6 +26,7 @@ public:
     static QString baseKey();
 
     QVector<PurchaseData> getPurchasesByUser(int userId);
+    QVector<PurchaseData> getPurchasesByTransport(int transportId);
 
 protected slots:
     /**
@@ -36,16 +37,19 @@ protected slots:
 
 signals:
     void purchaseAdded(const PurchaseData &data);
+    void purchaseModified(const PurchaseData &data);
 
 private:
     void selectDataFromStorage();
+
+    void updatePurchases(const PurchaseData &data);
 
 private:
     DatabaseCommon::LocalDBStorage<PurchaseData> _storage;
     QSharedPointer<PurchaseDBProvider> _provider;
 
-    QHash<int, QVector<PurchaseData>> _purchasesbyUser;
-
+    QHash<int, QVector<PurchaseData>> _purchasesByUser;;
+    QHash<int, QVector<PurchaseData>> _purchasesByTransport;
 };
 
 #endif // PURCHASESDBSERVICE_H

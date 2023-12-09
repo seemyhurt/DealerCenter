@@ -15,7 +15,7 @@ struct ManufacturerData
     int deliveryTime;       ///< сроки поставки
     int guaranteePeriod;    ///< срок гарантии на поставляемые товары
     QString transportBrand; ///< брэнд выпускаемых транспортных средств
-    QString type;           ///< тип выпускаемых транспортных средств 
+    QString type;           ///< тип выпускаемых транспортных средств
 
 
     QVariantMap toDBMap() const
@@ -66,6 +66,15 @@ struct ManufacturerData
         return temp;
     }
 
+    QVariantMap toTransportInfoMap() const
+    {
+        return QVariantMap {
+            {"Guarantee, years", guaranteePeriod},
+            {"Brand", transportBrand},
+            {"Type", type}
+        };
+    }
+
     static QStringList wigdetKeys()
     {
         return QStringList {"ID", "Name", "Delivery time, days", "Guarantee period, years", "Transport brand", "Transport type"};
@@ -75,9 +84,11 @@ struct ManufacturerData
     {
         return QStringList {"id", "name", "deliveryTime", "guaranteePeriod", "transportBrand", "type"};
     }
+
+    static QStringList CustomerKeys()
+    {
+        return QStringList {"Type", "Brand", "Guarantee, years" };
+    }
 };
-
-
-
 
 #endif // MANUFACTURERDATA_H

@@ -26,10 +26,13 @@ public:
     static QString baseKey();
 
     QVariantList getAllManufacturers();
+
     QStringList getAvailableBrands();
     QStringList getManufacturersByBrand(const QString & brand);
+
     QStringList getAvailableTypes();
     QStringList getManufacturersByType(const QString & type);
+
     ManufacturerData getManufacturerByName(const QString & name);
     ManufacturerData getManufacturerById(int id);
 
@@ -49,6 +52,7 @@ private:
 private:
     DatabaseCommon::LocalDBStorage<ManufacturerData> _storage;
     QSharedPointer<ManufacturerDBProvider> _provider;
+
     QHash<QString, QStringList> _namesToBrand;
     QHash<QString, QSet<QString>> _brandsToType;
     QHash<QString, ManufacturerData> _manufacturers;

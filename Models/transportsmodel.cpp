@@ -1,22 +1,112 @@
 #include "transportsmodel.h"
 #include "../Common/transportdata.h"
+#include "../Common/manufacturerdata.h"
 #include "../Services/servicelocator.h"
 #include "../Services/transportdbservice.h"
+#include "../Services/manufacturerdbservice.h"
 
 TransportsModel::TransportsModel(QObject * parent) :
     QStandardItemModel(parent),
-    _transportService(ServiceLocator::service<TransportDBService>())
+    _transportService(ServiceLocator::service<TransportDBService>()),
+    _manufacturerService(ServiceLocator::service<ManufacturerDBService>())
 {
     auto keys = TransportData::wigdetKeys();
-    setHorizontalHeaderLabels(keys);
+    auto manufacturerKeys = ManufacturerData::CustomerKeys();
+    setHorizontalHeaderLabels(manufacturerKeys + keys);
 
     auto transports = _transportService->getAllTransport();
 
-    for (const auto &transport : qAsConst(transports))
+    for (const auto &transport : qAsConst(transports))        
+        addTransportToModel(transport);
+
+    connect(_transportService.data(), &TransportDBService::transportAdded, this, &TransportsModel::handleNeedUpdateTransports);
+    connect(_transportService.data(), &TransportDBService::transportModified, this, &TransportsModel::handleNeedModifyTransports);
+}
+
+void TransportsModel::addTransportToModel(const TransportData &data)
+{
+    auto keys = TransportData::wigdetKeys();
+    auto manufacturerKeys = ManufacturerData::CustomerKeys();
+
+    auto manufacturer = _manufacturerService->getManufacturerByName(data.manufacturer).toTransportInfoMap();
+
+    QList<QStandardItem*> rowItems;
+    for (const auto &key : qAsConst(manufacturerKeys))
     {
-        auto transportMap = transport.toMap();
+        auto item =  new QStandardItem(manufacturer.value(key).toString());
+        item->setTextAlignment(Qt::AlignCenter);
+        rowItems << item;
+    }
+
+    auto transportMap = data.toWidgetMap();
+    for (const auto &key : qAsConst(keys))
+    {
+        auto item =  new QStandardItem(transportMap.value(key).toString());
+        item->setTextAlignment(Qt::AlignCenter);
+        rowItems << item;
+    }
+    appendRow(rowItems);
+}
+
+void TransportsModel::handleNeedUpdateTransports(const TransportData& data)
+{
+    addTransportToModel(data);
+}
+
+void TransportsModel::handleNeedModifyTransports(const TransportData &data)
+{
+    auto keys = TransportData::wigdetKeys();
+    auto manufacturerKeys = ManufacturerData::CustomerKeys();
+
+    auto manufacturer = _manufacturerService->getManufacturerByName(data.manufacturer).toTransportInfoMap();
+    auto transportMap = data.toWidgetMap();
+
+    auto rows = rowCount();
+    for (int i = 0; i < rows; ++i)
+    {
+        bool isFind = true;
+        auto colums = columnCount();
+
+        for (int j = 0; j < colums; ++j)
+        {
+            auto key = horizontalHeaderItem(j)->text();
+            if (key == "Count")
+                continue;
+
+            auto transportItem = item(i, j)->text();
+            if (manufacturer.contains(key))
+            {
+                auto val = manufacturer.value(key).toString();
+                if (transportItem != val)
+                {
+                    isFind = false;
+                    break;
+                }
+            }
+            else if (transportMap.contains(key))
+            {
+                auto val = transportMap.value(key).toString();
+                if (transportItem != val)
+                {
+                    isFind = false;
+                    break;
+                }
+            }
+        }
+        if(!isFind)
+            continue;
+
+        removeRow(i);
 
         QList<QStandardItem*> rowItems;
+        for (const auto &key : qAsConst(manufacturerKeys))
+        {
+            auto item =  new QStandardItem(manufacturer.value(key).toString());
+            item->setTextAlignment(Qt::AlignCenter);
+            rowItems << item;
+        }
+
+        auto transportMap = data.toWidgetMap();
         for (const auto &key : qAsConst(keys))
         {
             auto item =  new QStandardItem(transportMap.value(key).toString());
@@ -25,22 +115,5 @@ TransportsModel::TransportsModel(QObject * parent) :
         }
         appendRow(rowItems);
     }
-
-    connect(_transportService.data(), &TransportDBService::transportAdded, this, &TransportsModel::handleNeedUpdateTransports);
-}
-
-void TransportsModel::handleNeedUpdateTransports(const TransportData& data)
-{
-    auto keys = TransportData::wigdetKeys();
-    auto transportMap = data.toWidgetMap();
-
-    QList<QStandardItem*> rowItems;
-    for (const auto & key : qAsConst(keys))
-    {
-        auto item =  new QStandardItem(transportMap.value(key).toString());
-        item->setTextAlignment(Qt::AlignCenter);
-        rowItems << item;
-    }
-    appendRow(rowItems);
 }
 

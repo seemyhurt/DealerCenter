@@ -23,7 +23,7 @@ quint64 UserDBService::tableSize() const
 QSqlError UserDBService::addEntry(QVariantMap &values)
 {
     auto data = UserData::fromDBMap(values);
-    auto knownNumber = isUserExist(data.phoneNumber);
+    auto knownNumber = isCustomerExist(data.phoneNumber);
 
     auto id = knownNumber ? _phoneToUser[data.phoneNumber].id
                           : data.id;
@@ -32,15 +32,15 @@ QSqlError UserDBService::addEntry(QVariantMap &values)
     {
         _phoneToUser[data.phoneNumber] = data;
         //TODO изменение данных в модели
-        return _storage.addEntry(_provider.data(), values, true, data);
+        return _storage.addEntry(_provider.data(), values, data);
     }
 
-    id = _storage.size() + 1;
+    id = _storage.maxId() + 1;
     values["id"] = id;
     data.id = id;
     _phoneToUser.insert(data.phoneNumber, data);
 
-    auto err = _storage.addEntry(_provider.data(), values, false, data);
+    auto err = _storage.addEntry(_provider.data(), values, data);
     if (err.type() == QSqlError::NoError)
         emit userAdded(data);
     return err;
@@ -51,9 +51,16 @@ QSqlError UserDBService::removeEntry(quint64 id)
     return _storage.removeEntry(_provider.data(), id);
 }
 
-bool UserDBService::isUserExist(quint64 number)
+bool UserDBService::isCustomerExist(quint64 number)
 {
-    return _phoneToUser.contains(number);
+    return _phoneToUser.contains(number) &&
+        _phoneToUser[number].type == QLatin1String("Customer");
+}
+
+bool UserDBService::isManagerExist(quint64 number)
+{
+    return _phoneToUser.contains(number) &&
+           _phoneToUser[number].type == QLatin1String("Manager");
 }
 
 UserData UserDBService::getUserByNumber(quint64 number)

@@ -22,3 +22,9 @@ PurchasesTableWidget::PurchasesTableWidget(QWidget *parent)
 
     setLayout(layout);
 }
+
+void PurchasesTableWidget::setCurrentUser(quint64 number)
+{
+    if (_purchasesModel)
+        _purchasesModel->setCurrentUser(number);
+}

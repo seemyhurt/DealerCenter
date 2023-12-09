@@ -14,6 +14,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QDateTime>
+#include <QMessageBox>
 #include <QSpinBox>
 
 PurchaseWidget::PurchaseWidget(QWidget *parent) :
@@ -117,11 +118,11 @@ void PurchaseWidget::handleConditionChanged(const QString &condition)
 
 void PurchaseWidget::handleManufacturerAdded(const ManufacturerData & data)
 {
-    auto index = _brand->findText(data.transportBrand);
+    auto index = _type->findText(data.type);
     if (index == -1)
-        _brand->addItem(data.transportBrand);
-    else if (index == _brand->currentIndex())
-        _manufacturer->addItem(data.name);
+        _type->addItem(data.type);
+    else if (index == _type->currentIndex())
+        handleTypeChanged(data.type);
 }
 
 void PurchaseWidget::handleCreatePurchase()
@@ -130,28 +131,31 @@ void PurchaseWidget::handleCreatePurchase()
     auto manufacturer = _manufacturersService->getManufacturerByName(_manufacturer->currentText());
 
     TransportData data;
-    data.brand = manufacturer.transportBrand;
+    data.manufacturer = manufacturer.name;
     data.model = _model->text();
-    data.price = 1000; //TODO
-    data.guaranteePeriod = manufacturer.guaranteePeriod;
     data.year = _year->text().toInt();
     data.count = _count->text().toInt();
     data.condition = _condition->currentText();
-    data.type = _type->currentText();
-    data.inStock = false;
-    data.receiptDate = QDateTime::currentDateTime()
-                           .addDays(manufacturer.deliveryTime).toMSecsSinceEpoch();
+
+    auto date = QDateTime::currentDateTime().addDays(manufacturer.deliveryTime);
+    data.inStock = date.date() == QDate::currentDate();
+    data.receiptDate = date.toMSecsSinceEpoch();
+
+    auto map = data.toDBMap();
+    if (_transportService->addEntry(map).type() != QSqlError::NoError)
+    {
+        QMessageBox::warning(this, "Error", "Failed to create transport");
+        return;
+    }
 
     PurchaseData purchase;
-    purchase.transportId = 0;
+    purchase.transportId = _transportService->getInsertTransportId();
     purchase.count = _count->text().toInt();
     purchase.manufacturerId = manufacturer.id;
     purchase.userId = user.id;
     purchase.date = QDateTime::currentDateTime().toMSecsSinceEpoch();
 
-    auto map = data.toDBMap();
-    _transportService->addEntry(map);
-
     auto purchaseMap = purchase.toDBMap();
-    _purchasesService->addEntry(purchaseMap);
+    if (_purchasesService->addEntry(purchaseMap).type() != QSqlError::NoError)
+        QMessageBox::warning(this, "Error", "Failed to create purchase");
 }

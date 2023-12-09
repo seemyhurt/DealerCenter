@@ -24,9 +24,6 @@ void initServices()
     auto core = QSharedPointer<CoreService>::create("DilerCenter");
     ServiceLocator::addService(core);
 
-    auto transportService = QSharedPointer<TransportDBService>::create();
-    ServiceLocator::addService(transportService);
-
     auto userService = QSharedPointer<UserDBService>::create();
     ServiceLocator::addService(userService);
 
@@ -35,4 +32,7 @@ void initServices()
 
     auto purchasesService = QSharedPointer<PurchasesDBService>::create();
     ServiceLocator::addService(purchasesService);
+
+    auto transportService = QSharedPointer<TransportDBService>::create();
+    ServiceLocator::addService(transportService);
 }

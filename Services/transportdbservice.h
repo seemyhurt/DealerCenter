@@ -25,9 +25,11 @@ public:
      */
     static QString baseKey();
 
-    QVariantList getAllTransport();
+    QVector<TransportData> getAllTransport();
 
     TransportData getTransportById(int id);
+
+    int getInsertTransportId();
 
 protected slots:
     /**
@@ -38,16 +40,18 @@ protected slots:
 
 signals:
     void transportAdded(const TransportData &data);
+    void transportModified(const TransportData &data);
 
 private:
     void selectDataFromStorage();
+    QString getTransportKey(const TransportData &data);
 
-    QString generateTransortKey(const TransportData &data);
+    bool tryToMergeTransport(const TransportData &data);
 
 private:
     DatabaseCommon::LocalDBStorage<TransportData> _storage;
     QSharedPointer<TransportDBProvider> _provider;
-    QHash<QString, TransportData> _uniqueTransport;
+    QHash<QString, QList<TransportData>> _uniqueTransport;
 };
 
 #endif // TRANSPORTDBSERVICE_H

@@ -4,6 +4,7 @@
 #include <QStandardItemModel>
 
 class TransportDBService;
+class ManufacturerDBService;
 struct TransportData;
 
 class TransportsModel : public QStandardItemModel
@@ -12,11 +13,18 @@ class TransportsModel : public QStandardItemModel
 public:
     TransportsModel(QObject * parent = nullptr);
 
+private:
+    void addTransportToModel(const TransportData& data);
+
 private slots:
     void handleNeedUpdateTransports(const TransportData& data);
+    void handleNeedModifyTransports(const TransportData& data);
 
 private:
     QSharedPointer<TransportDBService> _transportService;
+    QSharedPointer<ManufacturerDBService> _manufacturerService;
+
+    int _idColumn;
 };
 
 #endif // TRANSPORTSMODEL_H

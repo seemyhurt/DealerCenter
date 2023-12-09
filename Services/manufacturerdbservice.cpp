@@ -38,14 +38,15 @@ QSqlError ManufacturerDBService::addEntry(QVariantMap &values)
 //        return _storage.addEntry(_provider.data(), values, true, data);
 //    }
 
-    auto id = _storage.size() + 1;
+    auto id = _storage.maxId() + 1;
     values["id"] = id;
     data.id = id;
+
     _namesToBrand[data.transportBrand].push_back(data.name);
     _brandsToType[data.type].insert(data.transportBrand);
     _manufacturers.insert(data.name, data);
 
-    auto err = _storage.addEntry(_provider.data(), values, false, data);
+    auto err = _storage.addEntry(_provider.data(), values, data);
     if (err.type() == QSqlError::NoError)
         emit manufacturerAdded(data);
     return err;

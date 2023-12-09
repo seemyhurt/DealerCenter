@@ -59,7 +59,7 @@ ManagersWidget::ManagersWidget(QWidget *parent)
 
     groupPurchase->setLayout(_purchasesWidget.data()->layout());
 
-    layout->addLayout(layoutLeft, 6);
+    layout->addLayout(layoutLeft, 8);
     layout->addLayout(layoutRight, 3);
     setLayout(layout);
 }
@@ -72,7 +72,7 @@ bool ManagersWidget::loginManager()
 
     auto loginInfo = dialog->getDialogInfo();
 
-    if (!_service->isUserExist(loginInfo.first))
+    if (!_service->isManagerExist(loginInfo.first))
     {
         QMessageBox::warning(nullptr, "Error", "Manager not exists, contact the administrator!");
         return false;
@@ -86,5 +86,6 @@ bool ManagersWidget::loginManager()
 
     QMessageBox::information(nullptr, "Success", "You have successfully logged in!");
     _purchasesWidget->setCurrentUser(loginInfo.first);
+    _purchasesTableWidget->setCurrentUser(loginInfo.first);
     return true;
 }

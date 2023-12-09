@@ -50,7 +50,7 @@ struct AppInterface
 
     inline bool operator !=(const AppInterface & other)
     {
-        return state != other.state;
+        return !this->operator==(other);
     }
 };
 

@@ -32,7 +32,9 @@ signals:
     void userAdded(const UserData & data);
 
 public:
-    bool isUserExist(quint64 number);
+    bool isCustomerExist(quint64 number);
+    bool isManagerExist(quint64 number);
+
     UserData getUserByNumber(quint64 number);
     UserData getUserById(int id);
     bool isPasswordCorrect(quint64 number, const QString & password);

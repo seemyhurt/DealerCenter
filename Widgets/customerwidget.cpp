@@ -51,7 +51,7 @@ bool CustomerWidget::loginCutomer()
 
     auto loginInfo = dialog->getDialogInfo();
 
-    if (!_service->isUserExist(loginInfo.first))
+    if (!_service->isCustomerExist(loginInfo.first))
     {
         QMessageBox::warning(this, "Error", "User with that number not exists!");
         return false;

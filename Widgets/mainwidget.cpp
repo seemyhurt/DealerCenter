@@ -8,7 +8,7 @@
 MainWidget::MainWidget(QWidget *parent)
     : QWidget{parent}
 {
-    resize(900, 600);
+    resize(1600, 700);
     auto layout = new QVBoxLayout(this);
 
     _menu = QSharedPointer<AppMenu>::create();
