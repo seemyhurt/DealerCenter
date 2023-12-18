@@ -3,6 +3,11 @@
 #include "customerwidget.h"
 #include "appmenu.h"
 #include "managerswidget.h"
+
+#include "../Models/manufacturersmodel.h"
+#include "../Models/purchasesmodel.h"
+#include "../Models/transportsmodel.h"
+
 #include <QLayout>
 
 MainWidget::MainWidget(QWidget *parent)
@@ -14,9 +19,13 @@ MainWidget::MainWidget(QWidget *parent)
     _menu = QSharedPointer<AppMenu>::create();
     layout->setMenuBar(_menu.data());
 
-    _customerWidget = QSharedPointer<CustomerWidget>::create();
-    _administratorWidget = QSharedPointer<AdministratorWidget>::create();
-    _managerWidget = QSharedPointer<ManagersWidget>::create();
+    auto purchasesModel = QSharedPointer<PurchasesModel>::create();
+    auto transportsModel = QSharedPointer<TransportsModel>::create();
+    auto manufacturersModel = QSharedPointer<ManufacturersModel>::create();
+
+    _customerWidget = QSharedPointer<CustomerWidget>::create(transportsModel, purchasesModel);
+    _administratorWidget = QSharedPointer<AdministratorWidget>::create(transportsModel, manufacturersModel);
+    _managerWidget = QSharedPointer<ManagersWidget>::create(purchasesModel, transportsModel, manufacturersModel);
 
     _administratorWidget->hide();
     _managerWidget->hide();

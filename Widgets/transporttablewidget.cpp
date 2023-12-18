@@ -6,9 +6,10 @@
 #include <QVBoxLayout>
 #include <QStandardItemModel>
 
-TransportTableWidget::TransportTableWidget(QWidget *parent)
+TransportTableWidget::TransportTableWidget(QSharedPointer<TransportsModel> model,
+                                           QWidget *parent)
     : QWidget(parent),
-    _transportModel(QSharedPointer<TransportsModel>::create())
+    _transportModel(model)
 {
     auto tableView = new QTableView(this);
     tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);

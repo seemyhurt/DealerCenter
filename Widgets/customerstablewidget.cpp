@@ -22,7 +22,7 @@ CustomersTableWidget::CustomersTableWidget(QWidget *parent)
     auto keys = UserData::wigdetKeys();
     _customerModel->setHorizontalHeaderLabels(keys);
 
-    auto users = _userService->getAllUsers();
+    auto users = _userService->getAllCustomers();
     for (const auto &user : qAsConst(users))
     {
         auto userMap = user.toMap();

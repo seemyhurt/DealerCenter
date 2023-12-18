@@ -8,9 +8,10 @@
 #include <QPushButton>
 #include <QMessageBox>
 
-PurchasesTableWidget::PurchasesTableWidget(QWidget *parent)
+PurchasesTableWidget::PurchasesTableWidget(QSharedPointer<PurchasesModel> model,
+                                           QWidget *parent)
     : QWidget(parent),
-    _purchasesModel(QSharedPointer<PurchasesModel>::create())
+    _purchasesModel(model)
 {
     auto tableView = new QTreeView(this);
     tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);

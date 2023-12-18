@@ -63,6 +63,11 @@ bool UserDBService::isManagerExist(quint64 number)
            _phoneToUser[number].type == QLatin1String("Manager");
 }
 
+bool UserDBService::isUserExist(quint64 number)
+{
+    return _phoneToUser.contains(number);
+}
+
 UserData UserDBService::getUserByNumber(quint64 number)
 {
     return _phoneToUser.value(number);
@@ -98,7 +103,7 @@ void UserDBService::selectDataFromStorage()
         _phoneToUser.insert(element.phoneNumber, element);
 }
 
-QVariantList UserDBService::getAllUsers()
+QVariantList UserDBService::getAllCustomers()
 {
     QVariantList result;
     for (const auto & element : qAsConst(_storage.elements()))

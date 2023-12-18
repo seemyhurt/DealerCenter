@@ -11,9 +11,11 @@
 #include <QPushButton>
 #include <QMessageBox>
 
-ManufacturersTableWidget::ManufacturersTableWidget(bool enableControl, QWidget *parent)
+ManufacturersTableWidget::ManufacturersTableWidget(QSharedPointer<ManufacturersModel> model,
+                                                   bool enableControl,
+                                                   QWidget *parent)
     : QWidget(parent),
-    _manufacturersModel(QSharedPointer<ManufacturersModel>::create())
+    _manufacturersModel(model)
 {
     auto tableView = new QTableView(this);
     tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);

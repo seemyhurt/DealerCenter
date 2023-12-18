@@ -9,13 +9,15 @@
 #include <QPushButton>
 #include <QTabWidget>
 
-AdministratorWidget::AdministratorWidget(QWidget *parent)
+AdministratorWidget::AdministratorWidget(QSharedPointer<TransportsModel> transportModel,
+                                         QSharedPointer<ManufacturersModel> manufacturerModel,
+                                         QWidget *parent)
     : QWidget(parent),
     _tabs(QSharedPointer<QTabWidget>::create(this)),
     _customersWidget(QSharedPointer<CustomersTableWidget>::create(this)),
-    _manufacturersWidget(QSharedPointer<ManufacturersTableWidget>::create(true, this)),
+    _manufacturersWidget(QSharedPointer<ManufacturersTableWidget>::create(manufacturerModel, true, this)),
     _managersWidget(QSharedPointer<ManagersTableWidget>::create(this)),
-    _transportsWidget(QSharedPointer<TransportTableWidget>::create(this))
+    _transportsWidget(QSharedPointer<TransportTableWidget>::create(transportModel, this))
 {
     _tabs->addTab(_customersWidget.data(), "Customers");
     _tabs->addTab(_manufacturersWidget.data(), "Manufacturers");

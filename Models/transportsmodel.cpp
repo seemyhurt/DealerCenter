@@ -62,58 +62,48 @@ void TransportsModel::handleNeedModifyTransports(const TransportData &data)
     auto transportMap = data.toWidgetMap();
 
     auto rows = rowCount();
+    auto columns = columnCount();
+
     for (int i = 0; i < rows; ++i)
     {
         bool isFind = true;
-        auto colums = columnCount();
+        int countField;
 
-        for (int j = 0; j < colums; ++j)
+        for (int j = 0; j < columns; ++j)
         {
-            auto key = horizontalHeaderItem(j)->text();
+            auto headerItem = horizontalHeaderItem(j);
+            if (!headerItem) continue;
+
+            auto key = headerItem->text();
             if (key == "Count")
+            {
+                countField = j;
                 continue;
+            }
 
-            auto transportItem = item(i, j)->text();
+            auto transportItem = item(i, j);
+            if (!transportItem) continue;
+
+            QString newValue;
+
             if (manufacturer.contains(key))
-            {
-                auto val = manufacturer.value(key).toString();
-                if (transportItem != val)
-                {
-                    isFind = false;
-                    break;
-                }
-            }
+                newValue = manufacturer.value(key).toString();
             else if (transportMap.contains(key))
+                newValue = transportMap.value(key).toString();
+
+            if (transportItem->text() != newValue)
             {
-                auto val = transportMap.value(key).toString();
-                if (transportItem != val)
-                {
-                    isFind = false;
-                    break;
-                }
+                isFind = false;
+                break;
             }
         }
-        if(!isFind)
-            continue;
 
-        removeRow(i);
+        if (!isFind) continue;
 
-        QList<QStandardItem*> rowItems;
-        for (const auto &key : qAsConst(manufacturerKeys))
-        {
-            auto item =  new QStandardItem(manufacturer.value(key).toString());
-            item->setTextAlignment(Qt::AlignCenter);
-            rowItems << item;
-        }
-
-        auto transportMap = data.toWidgetMap();
-        for (const auto &key : qAsConst(keys))
-        {
-            auto item =  new QStandardItem(transportMap.value(key).toString());
-            item->setTextAlignment(Qt::AlignCenter);
-            rowItems << item;
-        }
-        appendRow(rowItems);
+        auto countItem = item(i, countField);
+        if (countItem)
+            countItem->setData(data.count, Qt::DisplayRole);
+        return;
     }
 }
 

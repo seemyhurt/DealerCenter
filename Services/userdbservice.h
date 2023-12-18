@@ -25,7 +25,7 @@ public:
      */
     static QString baseKey();
 
-    QVariantList getAllUsers();
+    QVariantList getAllCustomers();
     QVariantList getAllManagers();
 
 signals:
@@ -34,6 +34,7 @@ signals:
 public:
     bool isCustomerExist(quint64 number);
     bool isManagerExist(quint64 number);
+    bool isUserExist(quint64 number);
 
     UserData getUserByNumber(quint64 number);
     UserData getUserById(int id);

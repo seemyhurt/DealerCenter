@@ -10,7 +10,8 @@ class TransportTableWidget : public QWidget
 {
     Q_OBJECT
 public:
-    TransportTableWidget(QWidget * parent = nullptr);
+    TransportTableWidget(QSharedPointer<TransportsModel> model,
+                         QWidget * parent = nullptr);
 
 private:
     QSharedPointer<TransportsModel> _transportModel;

@@ -3,6 +3,9 @@
 #include "logindialog.h"
 #include "../Services/servicelocator.h"
 #include "../Services/userdbservice.h"
+#include "purchasewidget.h"
+#include "transporttablewidget.h"
+#include "purchasestablewidget.h"
 
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -12,32 +15,42 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QSqlError>
+#include <QGroupBox>
 
-CustomerWidget::CustomerWidget(QWidget *parent)
+CustomerWidget::CustomerWidget(QSharedPointer<TransportsModel> transportModel,
+                               QSharedPointer<PurchasesModel> purchaseModel,
+                               QWidget *parent)
     : QWidget(parent),
-    _service(ServiceLocator::service<UserDBService>())
+    _service(ServiceLocator::service<UserDBService>()),
+    _transportsWidget(QSharedPointer<TransportTableWidget>::create(transportModel, this)),
+    _purchasesWidget(QSharedPointer<PurchaseWidget>::create(this)),
+    _purchasesTableWidget(QSharedPointer<PurchasesTableWidget>::create(purchaseModel, this))
 {
-    QLabel *titleLabel = new QLabel("Форма покупки автомобиля", this);
+    auto groupPurchase = new QGroupBox("Purchase form: ", this);
+    auto groupTransports = new QGroupBox("Transports: ", this);
+    auto groupPurchases = new QGroupBox("My purchases: ", this);
 
-    QLabel *carLabel = new QLabel("Выберите автомобиль:", this);
-    QComboBox *carComboBox = new QComboBox(this);
-    carComboBox->addItem("Модель 1");
-    carComboBox->addItem("Модель 2");
-    carComboBox->addItem("Модель 3");
+    auto layout = new QHBoxLayout(this);
 
-    QLabel *priceLabel = new QLabel("Цена:", this);
-    QLineEdit *priceLineEdit = new QLineEdit(this);
+    auto layoutTransport = new QVBoxLayout(this);
+    layoutTransport->addWidget(_transportsWidget.data());
+    groupTransports->setLayout(layoutTransport);
 
-    QPushButton *buyButton = new QPushButton("Купить", this);
+    auto layoutPurchase = new QVBoxLayout(this);
+    layoutPurchase->addWidget(_purchasesTableWidget.data());
+    groupPurchases->setLayout(layoutPurchase);
 
-    // Размещение виджетов на форме
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(titleLabel);
-    layout->addWidget(carLabel);
-    layout->addWidget(carComboBox);
-    layout->addWidget(priceLabel);
-    layout->addWidget(priceLineEdit);
-    layout->addWidget(buyButton);
+    auto layoutLeft = new QVBoxLayout(this);
+    layoutLeft->addWidget(groupTransports);
+
+    auto layoutRight = new QVBoxLayout(this);
+    layoutRight->addWidget(groupPurchase);
+    layoutRight->addWidget(groupPurchases);
+
+    groupPurchase->setLayout(_purchasesWidget.data()->layout());
+
+    layout->addLayout(layoutLeft, 8);
+    layout->addLayout(layoutRight, 3);
     setLayout(layout);
 }
 
@@ -63,6 +76,8 @@ bool CustomerWidget::loginCutomer()
     }
 
     QMessageBox::information(this, "Success", "You have successfully logged in!");
+    _purchasesWidget->setCurrentUser(loginInfo.first);
+    _purchasesTableWidget->setCurrentUser(loginInfo.first);
     return true;
 }
 
@@ -77,10 +92,18 @@ void CustomerWidget::handleRegisterUser()
     user.type = "Customer";
     auto userDbdata = user.toDBMap();
 
+    if (_service->isUserExist(user.phoneNumber))
+    {
+        QMessageBox::warning(nullptr, "Error", "User with that number already exists!");
+        return;
+    }
+
     if (_service->addEntry(userDbdata).type() == QSqlError::NoError)
     {
         QMessageBox::information(this, "Successfully added", "You have successfully registered!");
         emit newUserRegistred();
+        _purchasesWidget->setCurrentUser(user.phoneNumber);
+        _purchasesTableWidget->setCurrentUser(user.phoneNumber);
     }
     else
         QMessageBox::warning(this, "Error", "Incorrect user data");

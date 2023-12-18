@@ -87,6 +87,13 @@ void ManagersTableWidget::handleNeedAddManager()
 
     manager.type = "Manager";
     auto managerDbdata = manager.toDBMap();
+
+    if (_usersService->isUserExist(manager.phoneNumber))
+    {
+        QMessageBox::warning(nullptr, "Error", "User with that number already exists!");
+        return;
+    }
+
     if (_usersService->addEntry(managerDbdata).type() == QSqlError::NoError)
     {
         QMessageBox::information(this, "Successfully added", "Manager successfully added!");

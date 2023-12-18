@@ -35,6 +35,7 @@ void PurchasesModel::setCurrentUser(quint64 number)
     if (_currentUserNumber == number)
         return;
 
+    clear();
     _currentUserNumber = number;
     auto purchases = _purchaseService->getPurchasesByUser(number);
 

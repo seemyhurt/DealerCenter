@@ -22,13 +22,16 @@
 #include <QSqlError>
 #include <QGroupBox>
 
-ManagersWidget::ManagersWidget(QWidget *parent)
+ManagersWidget::ManagersWidget(QSharedPointer<PurchasesModel> purchasesModel,
+                               QSharedPointer<TransportsModel> transportsModel,
+                               QSharedPointer<ManufacturersModel> manufacturersModel,
+                               QWidget *parent)
     : QWidget(parent),
     _service(ServiceLocator::service<UserDBService>()),
-    _manufacturersWidget(QSharedPointer<ManufacturersTableWidget>::create(false)),
-    _transportsWidget(QSharedPointer<TransportTableWidget>::create()),
+    _manufacturersWidget(QSharedPointer<ManufacturersTableWidget>::create(manufacturersModel, false)),
+    _transportsWidget(QSharedPointer<TransportTableWidget>::create(transportsModel)),
     _purchasesWidget(QSharedPointer<PurchaseWidget>::create(this)),
-    _purchasesTableWidget(QSharedPointer<PurchasesTableWidget>::create(this))
+    _purchasesTableWidget(QSharedPointer<PurchasesTableWidget>::create(purchasesModel, this))
 {
     auto groupPurchase = new QGroupBox("Purchase form: ", this);
     auto groupManufacturers = new QGroupBox("Manufacturers: ", this);

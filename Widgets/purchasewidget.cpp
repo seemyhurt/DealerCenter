@@ -36,14 +36,14 @@ PurchaseWidget::PurchaseWidget(QWidget *parent) :
     _manufacturer = new QComboBox(this);
     lblManufacturers->setBuddy(lblManufacturers);
 
+    auto lblModel = new QLabel("&Model", this);
+    _model = new QLineEdit(this);
+    lblModel->setBuddy(_model);
+
     auto lblCondition = new QLabel("&Condition", this);
     _condition = new QComboBox(this);
     lblCondition->setBuddy(_condition);
     _condition->addItems({"New", "Old model", "Previously used"});
-
-    auto lblModel = new QLabel("&Model", this);
-    _model = new QLineEdit(this);
-    lblModel->setBuddy(_model);
 
     auto lblYear = new QLabel("&Year", this);
     _year = new QLineEdit(this);
@@ -74,10 +74,10 @@ PurchaseWidget::PurchaseWidget(QWidget *parent) :
     layout->addWidget(_brand, 1, 1);
     layout->addWidget(lblManufacturers, 2, 0);
     layout->addWidget(_manufacturer, 2, 1);
-    layout->addWidget(lblCondition, 3, 0);
-    layout->addWidget(_condition, 3, 1);
-    layout->addWidget(lblModel, 4, 0);
-    layout->addWidget(_model, 4, 1);
+    layout->addWidget(lblModel, 3, 0);
+    layout->addWidget(_model, 3, 1);
+    layout->addWidget(lblCondition, 4, 0);
+    layout->addWidget(_condition, 4, 1);
     layout->addWidget(lblYear, 5, 0);
     layout->addWidget(_year, 5, 1);
     layout->addWidget(lblCount, 6, 0);

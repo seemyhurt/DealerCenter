@@ -12,7 +12,8 @@ class PurchasesTableWidget : public QWidget
 {
     Q_OBJECT
 public:
-    PurchasesTableWidget(QWidget * parent = nullptr);
+    PurchasesTableWidget(QSharedPointer<PurchasesModel> model,
+                         QWidget * parent = nullptr);
     void setCurrentUser(quint64 number);;
 
 private:

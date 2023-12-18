@@ -89,6 +89,7 @@ void TransportDBService::selectDataFromStorage()
         if (QDateTime::fromMSecsSinceEpoch(it->receiptDate).date() <= QDate::currentDate())
         {
             copy.inStock = true;
+            copy.receiptDate = QDateTime::currentMSecsSinceEpoch();
             auto map = copy.toDBMap();
             _storage.addEntry(_provider.data(), map, copy);
         }

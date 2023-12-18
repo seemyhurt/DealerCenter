@@ -9,12 +9,18 @@ class ManufacturersTableWidget;
 class TransportTableWidget;
 class PurchaseWidget;
 class PurchasesTableWidget;
+class PurchasesModel;
+class TransportsModel;
+class ManufacturersModel;
 
 class ManagersWidget : public QWidget
 {
     Q_OBJECT
 public:
-    ManagersWidget(QWidget * parent = nullptr);
+    ManagersWidget(QSharedPointer<PurchasesModel> purchasesModel,
+                   QSharedPointer<TransportsModel> transportsModel,
+                   QSharedPointer<ManufacturersModel> manufacturersModel,
+                   QWidget *parent = nullptr);
 
     bool loginManager();
 

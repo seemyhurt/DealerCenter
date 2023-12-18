@@ -11,12 +11,16 @@ class CustomersTableWidget;
 class ManufacturersTableWidget;
 class ManagersTableWidget;
 class TransportTableWidget;
+class TransportsModel;
+class ManufacturersModel;
 
 class AdministratorWidget : public QWidget
 {
     Q_OBJECT
 public:
-    AdministratorWidget(QWidget * parent = nullptr);
+    AdministratorWidget(QSharedPointer<TransportsModel> transportModel,
+                        QSharedPointer<ManufacturersModel> manufacturerModel,
+                        QWidget * parent = nullptr);
 
 private:
     QSharedPointer<QTabWidget> _tabs;
