@@ -28,8 +28,11 @@ public:
     QVector<TransportData> getAllTransport();
 
     TransportData getTransportById(int id);
+    QList<TransportData> getTransportBykey(const QString& key);
+    QStringList getManufacturersModels(const QString& name);
 
     int getInsertTransportId();
+     QString getTransportKey(const QString &model, const QString &manufacturer);
 
 protected slots:
     /**
@@ -44,13 +47,12 @@ signals:
 
 private:
     void selectDataFromStorage();
-    QString getTransportKey(const TransportData &data);
-
     bool tryToMergeTransport(const TransportData &data);
 
 private:
     DatabaseCommon::LocalDBStorage<TransportData> _storage;
     QSharedPointer<TransportDBProvider> _provider;
+    QHash<QString, QSet<QString>> _manufacturersModels;
     QHash<QString, QList<TransportData>> _uniqueTransport;
 };
 

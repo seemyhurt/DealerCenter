@@ -30,7 +30,7 @@ ManagersWidget::ManagersWidget(QSharedPointer<PurchasesModel> purchasesModel,
     _service(ServiceLocator::service<UserDBService>()),
     _manufacturersWidget(QSharedPointer<ManufacturersTableWidget>::create(manufacturersModel, false)),
     _transportsWidget(QSharedPointer<TransportTableWidget>::create(transportsModel)),
-    _purchasesWidget(QSharedPointer<PurchaseWidget>::create(this)),
+    _purchasesWidget(QSharedPointer<PurchaseWidget>::create(WidgetInterface::Manager, this)),
     _purchasesTableWidget(QSharedPointer<PurchasesTableWidget>::create(purchasesModel, this))
 {
     auto groupPurchase = new QGroupBox("Purchase form: ", this);

@@ -16,14 +16,29 @@
 #include <QDateTime>
 #include <QMessageBox>
 #include <QSpinBox>
+#include <QSet>
 
-PurchaseWidget::PurchaseWidget(QWidget *parent) :
+static QStringList getAvailableYears()
+{
+    static auto startYear = QDate(2000, 1, 1).year();
+    static auto currentYear = QDate::currentDate().year();
+
+    QStringList yearsList;
+    yearsList.reserve(currentYear - startYear);
+    for (int year = startYear; year <= currentYear; ++year)
+        yearsList << QString::number(year);
+    return yearsList;
+}
+
+PurchaseWidget::PurchaseWidget(const WidgetInterface interface, QWidget *parent) :
     QWidget(parent),
     _manufacturersService(ServiceLocator::service<ManufacturerDBService>()),
     _usersService(ServiceLocator::service<UserDBService>()),
     _transportService(ServiceLocator::service<TransportDBService>()),
     _purchasesService(ServiceLocator::service<PurchasesDBService>())
 {
+    bool isCustomerInterface = interface == WidgetInterface::Customer;
+
     auto lblType = new QLabel("&Transport type", this);
     _type = new QComboBox(this);
     lblType->setBuddy(_type);
@@ -37,17 +52,28 @@ PurchaseWidget::PurchaseWidget(QWidget *parent) :
     lblManufacturers->setBuddy(lblManufacturers);
 
     auto lblModel = new QLabel("&Model", this);
-    _model = new QLineEdit(this);
-    lblModel->setBuddy(_model);
+    if (isCustomerInterface)
+    {
+        _availableModels = new QComboBox(this);
+        lblModel->setBuddy(_availableModels);
+    }
+    else
+    {
+        _model = new QLineEdit(this);
+        lblModel->setBuddy(_model);
+    }
 
     auto lblCondition = new QLabel("&Condition", this);
     _condition = new QComboBox(this);
     lblCondition->setBuddy(_condition);
-    _condition->addItems({"New", "Old model", "Previously used"});
+    if (!isCustomerInterface)
+        _condition->addItems({"New", "Old model", "Previously used"});
 
     auto lblYear = new QLabel("&Year", this);
-    _year = new QLineEdit(this);
-    lblYear->setBuddy(_year);
+    _availableYears = new QComboBox(this);
+    lblYear->setBuddy(_availableYears);
+    if (!isCustomerInterface)
+        _availableYears->addItems(getAvailableYears());
 
     auto lblCount = new QLabel("&Count", this);
     _count = new QSpinBox(this);
@@ -55,64 +81,98 @@ PurchaseWidget::PurchaseWidget(QWidget *parent) :
     _count->setMaximum(100);
     _count->setMinimum(1);
 
-    _brand->addItems(_manufacturersService->getAvailableBrands());
-    _type->addItems(_manufacturersService->getAvailableTypes());
+    auto types = _manufacturersService->getAvailableTypes();
+    if (!types.isEmpty())
+        _type->addItems(types);
 
     connect(_type, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleTypeChanged);
     connect(_brand, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleBrandChanged);
     connect(_condition, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleConditionChanged);
     connect(_manufacturersService.data(), &ManufacturerDBService::manufacturerAdded, this, &PurchaseWidget::handleManufacturerAdded);
 
+    if (isCustomerInterface)
+    {
+        connect(_manufacturer, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleManufacturerChanged);
+        connect(_availableModels, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleModelChanged);
+    }
     auto buttonBuy = new QPushButton("Buy new car", this);
     connect(buttonBuy, &QPushButton::clicked, this, &PurchaseWidget::handleCreatePurchase);
 
     QGridLayout * layout = new QGridLayout(this);
 
     layout->addWidget(lblType, 0, 0);
-    layout->addWidget(_type, 0, 1);
+    layout->addWidget(_type, 0, 1, 1, 4);
     layout->addWidget(lblBrand, 1, 0);
-    layout->addWidget(_brand, 1, 1);
+    layout->addWidget(_brand, 1, 1, 1, 4);
     layout->addWidget(lblManufacturers, 2, 0);
-    layout->addWidget(_manufacturer, 2, 1);
+    layout->addWidget(_manufacturer, 2, 1, 1, 4);
     layout->addWidget(lblModel, 3, 0);
-    layout->addWidget(_model, 3, 1);
+    isCustomerInterface ? layout->addWidget(_availableModels, 3, 1, 1, 4)
+                        : layout->addWidget(_model, 3, 1, 1, 4) ;
     layout->addWidget(lblCondition, 4, 0);
-    layout->addWidget(_condition, 4, 1);
+    layout->addWidget(_condition, 4, 1, 1, 4);
     layout->addWidget(lblYear, 5, 0);
-    layout->addWidget(_year, 5, 1);
+    layout->addWidget(_availableYears, 5, 1, 1, 4);
     layout->addWidget(lblCount, 6, 0);
-    layout->addWidget(_count, 6, 1);
-    layout->addWidget(buttonBuy, 7, 1);
+    layout->addWidget(_count, 6, 1, 1, 4);
+    layout->addWidget(buttonBuy, 7, 1, 1, 4);
 
     setLayout(layout);
     handleTypeChanged(_type->currentText());
-    handleBrandChanged(_brand->currentText());
-    handleConditionChanged(_condition->currentText());
+    if (!isCustomerInterface)
+        handleConditionChanged(_condition->currentText());
 }
 
 void PurchaseWidget::handleBrandChanged(const QString &brand)
 {
     _manufacturer->clear();
-    _manufacturer->addItems(_manufacturersService->getManufacturersByBrand(brand));
+    auto manufacturers = _manufacturersService->getManufacturersByBrand(brand);
+    if (!manufacturers.isEmpty())
+        _manufacturer->addItems(manufacturers);
 }
 
 void PurchaseWidget::handleTypeChanged(const QString &type)
 {
     _brand->clear();
-    _brand->addItems(_manufacturersService->getManufacturersByType(type));
+    auto brands = _manufacturersService->getManufacturersByType(type);
+    if (!brands.isEmpty())
+        _brand->addItems(brands);
+}
+
+void PurchaseWidget::handleManufacturerChanged(const QString &manufacturer)
+{
+    _availableModels->clear();
+    auto models = _transportService->getManufacturersModels(manufacturer);
+    if (!models.isEmpty())
+        _availableModels->addItems(models);
 }
 
 void PurchaseWidget::handleConditionChanged(const QString &condition)
 {
+    _availableYears->clear();
     if (condition == QLatin1String("New"))
     {
-        _year->setText("2023");
-        _year->setReadOnly(true);
+        _availableYears->addItem(QString::number(QDate::currentDate().year()));
+        _availableYears->setEnabled(false);
     }
     else
     {
-        _year->clear();
-        _year->setReadOnly(false);
+        _availableYears->setEnabled(true);
+        if (_usersService->getUserByNumber(_currentUserNumber).type == QLatin1String("Manager"))
+            return _availableYears->addItems(getAvailableYears());
+
+        auto key = _transportService->getTransportKey(_availableModels->currentText(), _manufacturer->currentText());
+        auto transports = _transportService->getTransportBykey(key);
+
+        QSet<int> years;
+        for (const auto &transport : qAsConst(transports))
+        {
+            if (!years.contains(transport.year) && transport.condition == condition)
+            {
+                years.insert(transport.year);
+                _availableYears->addItem(QString::number(transport.year));
+            }
+        }
     }
 }
 
@@ -125,6 +185,24 @@ void PurchaseWidget::handleManufacturerAdded(const ManufacturerData & data)
         handleTypeChanged(data.type);
 }
 
+void PurchaseWidget::handleModelChanged(const QString &model)
+{
+    _condition->clear();
+    auto key = _transportService->getTransportKey(model, _manufacturer->currentText());
+    auto transports = _transportService->getTransportBykey(key);
+
+    QSet<QString> conditions;
+    _condition->clear();
+    for (const auto &transport : qAsConst(transports))
+    {
+        if (!conditions.contains(transport.condition))
+        {
+            conditions.insert(transport.condition);
+            _condition->addItem(transport.condition);
+        }
+    }
+}
+
 void PurchaseWidget::handleCreatePurchase()
 {
     auto user = _usersService->getUserByNumber(_currentUserNumber);
@@ -133,7 +211,7 @@ void PurchaseWidget::handleCreatePurchase()
     TransportData data;
     data.manufacturer = manufacturer.name;
     data.model = _model->text();
-    data.year = _year->text().toInt();
+    data.year = _availableYears->currentText().toInt();
     data.count = _count->text().toInt();
     data.condition = _condition->currentText();
 

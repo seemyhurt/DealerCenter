@@ -33,6 +33,8 @@ QSqlError TransportDBService::addEntry(QVariantMap &values)
     values["id"] = id;
     data.id = id;
 
+    _manufacturersModels[data.manufacturer].insert(data.model);
+
     if (tryToMergeTransport(data))
         return {{}, {}, QSqlError::NoError};
 
@@ -54,6 +56,20 @@ QVector<TransportData> TransportDBService::getAllTransport()
 TransportData TransportDBService::getTransportById(int id)
 {
     return _storage.elements().value(id);
+}
+
+QList<TransportData> TransportDBService::getTransportBykey(const QString &key)
+{
+    return _uniqueTransport.value(key);
+}
+
+QStringList TransportDBService::getManufacturersModels(const QString &name)
+{
+    QStringList result;
+    result.reserve(_storage.size());
+    for (const auto & element : qAsConst(_manufacturersModels[name]))
+        result << element;
+    return result;
 }
 
 int TransportDBService::getInsertTransportId()
@@ -94,6 +110,8 @@ void TransportDBService::selectDataFromStorage()
             _storage.addEntry(_provider.data(), map, copy);
         }
 
+        _manufacturersModels[copy.manufacturer].insert(copy.model);
+
         auto nextIt = std::next(it);
         tryToMergeTransport(copy);
 
@@ -101,16 +119,16 @@ void TransportDBService::selectDataFromStorage()
     }
 }
 
-QString TransportDBService::getTransportKey(const TransportData &data)
+QString TransportDBService::getTransportKey(const QString &model, const QString &manufacturer)
 {
-    return QStringLiteral("%1%2").arg(data.model, data.manufacturer);
+    return QStringLiteral("%1%2").arg(model, manufacturer);
 }
 
 bool TransportDBService::tryToMergeTransport(const TransportData &data)
 {
     auto purchasesService = ServiceLocator::service<PurchasesDBService>();
 
-    auto key = getTransportKey(data);
+    auto key = getTransportKey(data.model, data.manufacturer);
 
      if (!_uniqueTransport.contains(key))
     {
