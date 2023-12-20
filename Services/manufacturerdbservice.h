@@ -31,7 +31,7 @@ public:
     QStringList getManufacturersByBrand(const QString & brand);
 
     QStringList getAvailableTypes();
-    QStringList getManufacturersByType(const QString & type);
+    QStringList getBrandsByType(const QString & type);
 
     ManufacturerData getManufacturerByName(const QString & name);
     ManufacturerData getManufacturerById(int id);

@@ -43,7 +43,7 @@ LocalDBStatus LocalDBProviderBase::status() const
 }
 
 void LocalDBProviderBase::setContext(const QString& table,
-                                     const QVector<LocalDBColumn>& columns,
+                                     const QStringList &columns,
                                      const QString& dbFilename,
                                      const QString& dbFilepath,
                                      const QString& connectionName)
@@ -75,13 +75,11 @@ LocalDBStatus LocalDBProviderBase::createNewTable()
     {
         // construct columns
         QString columnInfos = "";
-        for (auto p = _columns.cbegin(); p != _columns.cend(); ++p)
+        for (const auto &p : qAsConst(_columns))
         {
-            columnInfos += ',' + p->name;
-            if (p->name == "id")
+            columnInfos += ',' + p;
+            if (p == "id")
                 columnInfos += " INTEGER PRIMARY KEY AUTOINCREMENT";
-            else if (p->defaultValue != "")
-                columnInfos += " DEFAULT " + p->defaultValue;
         }
         columnInfos[0] = '(';
         columnInfos.push_back(')');

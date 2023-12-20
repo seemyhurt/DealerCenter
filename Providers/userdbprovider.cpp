@@ -6,19 +6,8 @@
 UserDBProvider::UserDBProvider(QObject* parent) :
     LocalDBProviderBase{parent}
 {
-    QVector<DatabaseCommon::LocalDBColumn> columns{
-                                                   {"id"},
-                                                   {"phoneNumber"},
-                                                   {"firstName"},
-                                                   {"lastName"},
-                                                   {"surname"},
-                                                   {"age"},
-                                                   {"type"},
-                                                   {"password"},
-                                                   };
-
     setContext("user_data",
-               columns,
+               UserData::dBKeys(),
                "users.db3",
                ServiceLocator::service<CoreService>()->appDataPath(),
                "UserDBProvider");

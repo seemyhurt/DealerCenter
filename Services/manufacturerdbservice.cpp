@@ -94,7 +94,7 @@ QStringList ManufacturerDBService::getManufacturersByBrand(const QString & brand
     return _namesToBrand.value(brand);
 }
 
-QStringList ManufacturerDBService::getManufacturersByType(const QString & type)
+QStringList ManufacturerDBService::getBrandsByType(const QString & type)
 {
     QStringList result;
     const auto & brands = _brandsToType[type];

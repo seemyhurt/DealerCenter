@@ -16,7 +16,7 @@ struct ManufacturerData
     int guaranteePeriod;    ///< срок гарантии на поставляемые товары
     QString transportBrand; ///< брэнд выпускаемых транспортных средств
     QString type;           ///< тип выпускаемых транспортных средств
-
+    quint64 basePrice;      ///< закупочная цена транспортного средства
 
     QVariantMap toDBMap() const
     {
@@ -26,7 +26,8 @@ struct ManufacturerData
             {"deliveryTime", deliveryTime},
             {"guaranteePeriod", guaranteePeriod},
             {"transportBrand", transportBrand},
-            {"type", type}
+            {"type", type},
+            {"basePrice", basePrice},
         };
     }
 
@@ -39,6 +40,7 @@ struct ManufacturerData
         temp.guaranteePeriod = variant.value("guaranteePeriod").toInt();
         temp.transportBrand = variant.value("transportBrand").toString();
         temp.type = variant.value("type").toString();
+        temp.basePrice = variant.value("basePrice").toLongLong();
         return temp;
     }
 
@@ -50,7 +52,8 @@ struct ManufacturerData
             {"Delivery time, days", deliveryTime},
             {"Guarantee period, years", guaranteePeriod},
             {"Transport brand", transportBrand},
-            {"Transport type", type}
+            {"Transport type", type},
+            {"Base price", basePrice}
         };
     }
 
@@ -63,6 +66,7 @@ struct ManufacturerData
         temp.guaranteePeriod = variant.value("Guarantee period, years").toInt();
         temp.transportBrand = variant.value("Transport brand").toString();
         temp.type = variant.value("Transport type").toString();
+        temp.basePrice = variant.value("Base price").toLongLong();
         return temp;
     }
 
@@ -77,12 +81,12 @@ struct ManufacturerData
 
     static QStringList wigdetKeys()
     {
-        return QStringList {"ID", "Name", "Delivery time, days", "Guarantee period, years", "Transport brand", "Transport type"};
+        return QStringList {"ID", "Name", "Delivery time, days", "Guarantee period, years", "Transport brand", "Transport type", "Base price"};
     }
 
     static QStringList DBKeys()
     {
-        return QStringList {"id", "name", "deliveryTime", "guaranteePeriod", "transportBrand", "type"};
+        return QStringList {"id", "name", "deliveryTime", "guaranteePeriod", "transportBrand", "type", "basePrice"};
     }
 
     static QStringList CustomerKeys()

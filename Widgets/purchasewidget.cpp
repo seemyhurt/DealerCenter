@@ -81,6 +81,11 @@ PurchaseWidget::PurchaseWidget(const WidgetInterface interface, QWidget *parent)
     _count->setMaximum(100);
     _count->setMinimum(1);
 
+    auto lblPrice = new QLabel("&Price", this);
+    _price = new QLineEdit(this);
+    _price->setEnabled(false);
+    lblPrice->setBuddy(_price);
+
     auto types = _manufacturersService->getAvailableTypes();
     if (!types.isEmpty())
         _type->addItems(types);
@@ -89,11 +94,13 @@ PurchaseWidget::PurchaseWidget(const WidgetInterface interface, QWidget *parent)
     connect(_brand, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleBrandChanged);
     connect(_condition, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleConditionChanged);
     connect(_manufacturersService.data(), &ManufacturerDBService::manufacturerAdded, this, &PurchaseWidget::handleManufacturerAdded);
+    connect(_manufacturer, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleManufacturerChanged);
+    connect(_count, SIGNAL(valueChanged(int)), this, SLOT(handleRecalculatePrice(int)));
 
     if (isCustomerInterface)
     {
-        connect(_manufacturer, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleManufacturerChanged);
         connect(_availableModels, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleModelChanged);
+        connect(_purchasesService.data(), &PurchasesDBService::purchaseAdded, this, &PurchaseWidget::handlePurchaseAdded);
     }
     auto buttonBuy = new QPushButton("Buy new car", this);
     connect(buttonBuy, &QPushButton::clicked, this, &PurchaseWidget::handleCreatePurchase);
@@ -115,7 +122,9 @@ PurchaseWidget::PurchaseWidget(const WidgetInterface interface, QWidget *parent)
     layout->addWidget(_availableYears, 5, 1, 1, 4);
     layout->addWidget(lblCount, 6, 0);
     layout->addWidget(_count, 6, 1, 1, 4);
-    layout->addWidget(buttonBuy, 7, 1, 1, 4);
+    layout->addWidget(lblPrice, 7, 0);
+    layout->addWidget(_price, 7, 1, 1, 4);
+    layout->addWidget(buttonBuy, 8, 1, 1, 4);
 
     setLayout(layout);
     handleTypeChanged(_type->currentText());
@@ -127,28 +136,37 @@ void PurchaseWidget::handleBrandChanged(const QString &brand)
 {
     _manufacturer->clear();
     auto manufacturers = _manufacturersService->getManufacturersByBrand(brand);
-    if (!manufacturers.isEmpty())
-        _manufacturer->addItems(manufacturers);
+    for (const auto &manufacturer : qAsConst(manufacturers))
+    {
+        auto type = _manufacturersService->getManufacturerByName(manufacturer).type;
+        if (type == _type->currentText())
+            _manufacturer->addItem(manufacturer);
+    }
 }
 
 void PurchaseWidget::handleTypeChanged(const QString &type)
 {
     _brand->clear();
-    auto brands = _manufacturersService->getManufacturersByType(type);
+    auto brands = _manufacturersService->getBrandsByType(type);
     if (!brands.isEmpty())
         _brand->addItems(brands);
 }
 
 void PurchaseWidget::handleManufacturerChanged(const QString &manufacturer)
 {
-    _availableModels->clear();
-    auto models = _transportService->getManufacturersModels(manufacturer);
-    if (!models.isEmpty())
-        _availableModels->addItems(models);
+    if (_usersService->getUserByNumber(_currentUserNumber).type == QLatin1String("Customer"))
+    {
+        _availableModels->clear();
+        auto models = _transportService->getManufacturersModels(manufacturer);
+        if (!models.isEmpty())
+            _availableModels->addItems(models);
+    }
+    auto price = _manufacturersService->getManufacturerByName(manufacturer).basePrice;
+    return _price->setText(QStringLiteral("%1").arg(price));
 }
 
 void PurchaseWidget::handleConditionChanged(const QString &condition)
-{
+{       
     _availableYears->clear();
     if (condition == QLatin1String("New"))
     {
@@ -178,6 +196,10 @@ void PurchaseWidget::handleConditionChanged(const QString &condition)
 
 void PurchaseWidget::handleManufacturerAdded(const ManufacturerData & data)
 {
+    auto emptyPart = _type->findText("");
+    if (emptyPart != -1)
+        _type->removeItem(emptyPart);
+
     auto index = _type->findText(data.type);
     if (index == -1)
         _type->addItem(data.type);
@@ -236,4 +258,21 @@ void PurchaseWidget::handleCreatePurchase()
     auto purchaseMap = purchase.toDBMap();
     if (_purchasesService->addEntry(purchaseMap).type() != QSqlError::NoError)
         QMessageBox::warning(this, "Error", "Failed to create purchase");
+}
+
+void PurchaseWidget::handleRecalculatePrice(int count)
+{
+    auto currentPrice = _manufacturersService->getManufacturerByName(_manufacturer->currentText()).basePrice;
+    _price->setText(QString::number(currentPrice * count));
+    if (_usersService->getUserByNumber(_currentUserNumber).type == QLatin1String("Customer"))
+    {
+    }
+}
+
+void PurchaseWidget::handlePurchaseAdded(const PurchaseData &purchase)
+{
+    auto manufacturer = _manufacturersService->getManufacturerById(purchase.manufacturerId);
+    auto index = _type->findText(manufacturer.type);
+    if (index == _type->currentIndex())
+        handleTypeChanged(manufacturer.type);
 }

@@ -6,19 +6,8 @@
 TransportDBProvider::TransportDBProvider(QObject* parent) :
     LocalDBProviderBase{parent}
 {
-    QVector<DatabaseCommon::LocalDBColumn> columns{
-                                                   {"id"},
-                                                   {"model"},
-                                                   {"year"},
-                                                   {"count"},
-                                                   {"condition"},
-                                                   {"inStock"},
-                                                   {"receiptDate"},
-                                                   {"manufacturer"}
-    };
-
     setContext("car_data",
-               columns,
+               TransportData::DBKeys(),
                "cars.db3",
                ServiceLocator::service<CoreService>()->appDataPath(),
                "TransportDBProvider");

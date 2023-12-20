@@ -14,15 +14,6 @@
 namespace DatabaseCommon {
 
 /**
- * @brief Структура описания колонки БД.
- */
-struct LocalDBColumn
-{
-    QString name = "";           ///< Имя колонки
-    QString defaultValue = "";   ///< Значение по умолчанию, пустая строка, если значения нету
-};
-
-/**
  * @brief Состояние подключения БД.
  */
 enum class LocalDBStatus
@@ -116,7 +107,7 @@ protected:
      * @param connectionName Название соединения.
      */
     void setContext(const QString& table,
-                    const QVector<LocalDBColumn>& columns,
+                    const QStringList& columns,
                     const QString &dbFilename,
                     const QString &dbFilepath,
                     const QString& connectionName = {});
@@ -129,11 +120,11 @@ private:
 
     QSqlDatabase _db;
 
-    QString _name{};
+    QString _name {};
 
-    QString _table{};
-    QVector<LocalDBColumn> _columns{};
-    QString _connection{};
+    QString _table {};
+    QStringList _columns {};
+    QString _connection {};
     LocalDBStatus _status = LocalDBStatus::Unknown;
 };
 

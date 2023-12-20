@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QGridLayout>
+#include "../inputvalidatorfactory.h"
 
 IInputDialogBase::IInputDialogBase(const QStringList & params, QWidget *pwgt)
     : QDialog(pwgt, Qt::WindowTitleHint | Qt::WindowSystemMenuHint)
@@ -13,7 +14,10 @@ IInputDialogBase::IInputDialogBase(const QStringList & params, QWidget *pwgt)
     _inputWidgets.reserve(size);
     for (const auto &param : qAsConst(params))
     {
-        _inputWidgets <<  new QLineEdit(this);
+        auto wgt = new QLineEdit(this);
+        wgt->setValidator(InputValidatorFactory::validator(param));
+        _inputWidgets <<  wgt;
+
         _labels << new QLabel(QString("&%1: ").arg(param), this);
     }
 

@@ -7,17 +7,8 @@
 PurchaseDBProvider::PurchaseDBProvider(QObject* parent) :
     LocalDBProviderBase{parent}
 {
-    QVector<DatabaseCommon::LocalDBColumn> columns{
-                                                    {"id"},
-                                                    {"userId"},
-                                                    {"transportId"},
-                                                    {"manufacturerId"},
-                                                    {"count"},
-                                                    {"date"}
-    };
-
     setContext("purchase_data",
-               columns,
+               PurchaseData::DBKeys(),
                "purchases.db3",
                ServiceLocator::service<CoreService>()->appDataPath(),
                "PurchaseDBProvider");

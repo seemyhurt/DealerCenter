@@ -13,6 +13,7 @@ class QComboBox;
 class QLineEdit;
 class QSpinBox;
 struct ManufacturerData;
+struct PurchaseData;
 
 enum class WidgetInterface
 {
@@ -36,6 +37,8 @@ private slots:
     void handleManufacturerAdded(const ManufacturerData & data);
     void handleModelChanged(const QString &model);
     void handleCreatePurchase();
+    void handleRecalculatePrice(int);
+    void handlePurchaseAdded(const PurchaseData &model);
 
 private:
     QSharedPointer<ManufacturerDBService> _manufacturersService;
@@ -52,6 +55,7 @@ private:
     QComboBox * _availableYears;
 
     QLineEdit * _model;
+    QLineEdit * _price;
     QSpinBox * _count;
 
     quint64 _currentUserNumber;
