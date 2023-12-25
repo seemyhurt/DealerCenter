@@ -47,7 +47,7 @@ set(PROJECT_SOURCES
     Models/transportsmodel.cpp
     Models/purchasesmodel.cpp
 
-
+    inputvalidatorfactory.cpp
     main.cpp
 )
 
@@ -93,12 +93,14 @@ set(PROJECT_HEADERS
     Models/manufacturersmodel.h
     Models/transportsmodel.h
     Models/purchasesmodel.h
+
+    inputvalidatorfactory.h
 )
 
 add_executable(DilerCenter
     ${PROJECT_HEADERS}
     ${PROJECT_SOURCES}
-    inputvalidatorfactory.h inputvalidatorfactory.cpp
+    resources.qrc
 )
 
 target_link_libraries(DilerCenter PRIVATE Qt${QT_VERSION_MAJOR}::Widgets

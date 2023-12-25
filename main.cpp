@@ -1,5 +1,4 @@
 #include "Widgets/mainwidget.h"
-#include <QApplication>
 #include "Services/coreservice.h"
 #include "Services/servicelocator.h"
 #include "Services/transportdbservice.h"
@@ -7,12 +6,16 @@
 #include "Services/manufacturerdbservice.h"
 #include "Services/purchasesdbservice.h"
 
+#include <QIcon>
+#include <QApplication>
+
 void initServices();
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     initServices();
+    a.setWindowIcon(QIcon(":/Icon/icon.png"));
 
     MainWidget w;
     w.show();

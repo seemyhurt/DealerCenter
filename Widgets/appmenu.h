@@ -69,6 +69,7 @@ private slots:
 
 signals:
     void menuInterfaceChanged(const QString & interface);
+    void needShowHelp();
 
 private:
     AppInterface _currentState;

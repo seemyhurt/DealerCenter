@@ -1,6 +1,6 @@
 #include "inputuserdialog.h"
 
-QStringList InputUserDialog::_params = {"Phone number", "First name", "Last name", "Surname", "Age", "Password"};
+QStringList InputUserDialog::_params = {"Phone number", "Last name", "First name", "Patronymic", "Age", "Password"};
 
 InputUserDialog::InputUserDialog(QWidget *pwgt) : IInputDialogBase(_params, pwgt)
 {

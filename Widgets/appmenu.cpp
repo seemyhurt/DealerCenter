@@ -26,7 +26,7 @@ void AppMenu::setState(const Interface state)
 
 void AppMenu::handleAboutApp()
 {
-
+    emit needShowHelp();
 }
 
 void AppMenu::handleInterfaceChanged()

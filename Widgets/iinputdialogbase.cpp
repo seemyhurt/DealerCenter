@@ -15,7 +15,7 @@ IInputDialogBase::IInputDialogBase(const QStringList & params, QWidget *pwgt)
     for (const auto &param : qAsConst(params))
     {
         auto wgt = new QLineEdit(this);
-        wgt->setValidator(InputValidatorFactory::validator(param));
+        wgt->setValidator(InputValidatorFactory::validator(param, this));
         _inputWidgets <<  wgt;
 
         _labels << new QLabel(QString("&%1: ").arg(param), this);

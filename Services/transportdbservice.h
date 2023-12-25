@@ -19,6 +19,8 @@ public:
     QSqlError addEntry(QVariantMap &values) override;
     QSqlError removeEntry(quint64 id) override;
 
+    bool modifyTransportData(const TransportData & data);
+
     /**
      * @brief Возвращает уникальный ключ сервиса
      * @return Строка с ключом
@@ -28,7 +30,7 @@ public:
     QVector<TransportData> getAllTransport();
 
     TransportData getTransportById(int id);
-    QList<TransportData> getTransportBykey(const QString& key);
+    QList<TransportData> getTransportByKey(const QString& key);
     QStringList getManufacturersModels(const QString& name);
 
     int getInsertTransportId();

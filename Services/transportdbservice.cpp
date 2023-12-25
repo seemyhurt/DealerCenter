@@ -58,7 +58,7 @@ TransportData TransportDBService::getTransportById(int id)
     return _storage.elements().value(id);
 }
 
-QList<TransportData> TransportDBService::getTransportBykey(const QString &key)
+QList<TransportData> TransportDBService::getTransportByKey(const QString &key)
 {
     return _uniqueTransport.value(key);
 }
@@ -80,6 +80,33 @@ int TransportDBService::getInsertTransportId()
 QSqlError TransportDBService::removeEntry(quint64 id)
 {
     return _storage.removeEntry(_provider.data(), id);
+}
+
+bool TransportDBService::modifyTransportData(const TransportData &data)
+{
+    auto purchasesService = ServiceLocator::service<PurchasesDBService>();
+    auto key = getTransportKey(data.model, data.manufacturer);
+
+    auto & range = _uniqueTransport[key];
+    int modifiedId = 0;
+    for (int i = 0; i < range.size(); i++)
+    {
+        if (range[i] != data)
+            continue;
+
+        range[i].count -= data.count;
+        auto map = range[i].toDBMap();
+        if (_storage.addEntry(_provider.data(), map, range[i]).type() != QSqlError::NoError)
+            return false;
+
+        modifiedId = range[i].id;
+        emit transportModified(range[i]);
+    }
+
+    if (modifiedId != 0)
+        return true;
+    else
+        return false;
 }
 
 void TransportDBService::handleDbConnectionChange(DatabaseCommon::LocalDBStatus status)

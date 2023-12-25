@@ -22,7 +22,7 @@ QVector<UserData> UserDBProvider::getUsers()
                           make_pair("phoneNumber", &UD::phoneNumber),
                           make_pair("firstName", &UD::firstName),
                           make_pair("lastName", &UD::lastName),
-                          make_pair("surname", &UD::surname),
+                          make_pair("patronymic", &UD::patronymic),
                           make_pair("age", &UD::age),
                           make_pair("type", &UD::type),
                           make_pair("password", &UD::password));

@@ -81,7 +81,7 @@ struct ManufacturerData
 
     static QStringList wigdetKeys()
     {
-        return QStringList {"ID", "Name", "Delivery time, days", "Guarantee period, years", "Transport brand", "Transport type", "Base price"};
+        return QStringList {"Name", "Delivery time, days", "Guarantee period, years", "Transport brand", "Transport type", "Base price"};
     }
 
     static QStringList DBKeys()

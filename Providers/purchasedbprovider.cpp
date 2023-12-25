@@ -24,7 +24,8 @@ QVector<PurchaseData> PurchaseDBProvider::getPurchases()
                           make_pair("transportId", &PD::transportId),
                           make_pair("manufacturerId", &PD::manufacturerId),
                           make_pair("count", &PD::count),
-                          make_pair("date", &PD::date));
+                          make_pair("date", &PD::date),
+                          make_pair("price", &PD::price));
 }
 
 QString PurchaseDBProvider::baseKey()

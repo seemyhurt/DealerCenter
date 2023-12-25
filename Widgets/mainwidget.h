@@ -7,7 +7,7 @@ class AppMenu;
 class CustomerWidget;
 class AdministratorWidget;
 class ManagersWidget;
-class QLayout;
+class QLabel;
 
 class MainWidget : public QWidget
 {
@@ -18,12 +18,14 @@ public:
 private slots:
     void handleNeedChangeInterface(const QString & type);
     void handleSetUserInterface();
+    void handleNeedShowHelp();
 
 private:
-    QSharedPointer<AppMenu> _menu;
-    QSharedPointer<CustomerWidget> _customerWidget;
-    QSharedPointer<AdministratorWidget> _administratorWidget;
-    QSharedPointer<ManagersWidget> _managerWidget;
+    AppMenu * _menu;
+    CustomerWidget * _customerWidget;
+    AdministratorWidget * _administratorWidget;
+    ManagersWidget * _managerWidget;
+    QLabel * _help;
 
     QWidget * _lastAddedWidet = nullptr;
 };

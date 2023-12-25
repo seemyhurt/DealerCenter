@@ -64,7 +64,7 @@ struct TransportData
 
     static QStringList wigdetKeys()
     {
-        return QStringList {"ID", "Model", "Year", "Count", "Condition", "Availability", "Receipt date", "Manufacturer"};
+        return QStringList {"Model", "Year", "Count", "Condition", "Availability", "Receipt date", "Manufacturer"};
     }
 
     static QStringList DBKeys()

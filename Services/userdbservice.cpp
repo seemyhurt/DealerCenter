@@ -23,21 +23,11 @@ quint64 UserDBService::tableSize() const
 QSqlError UserDBService::addEntry(QVariantMap &values)
 {
     auto data = UserData::fromDBMap(values);
-    auto knownNumber = isCustomerExist(data.phoneNumber);
 
-    auto id = knownNumber ? _phoneToUser[data.phoneNumber].id
-                          : data.id;
-
-    if (_storage.elements().contains(id) || knownNumber)
-    {
-        _phoneToUser[data.phoneNumber] = data;
-        //TODO изменение данных в модели
-        return _storage.addEntry(_provider.data(), values, data);
-    }
-
-    id = _storage.maxId() + 1;
+    auto id = _storage.maxId() + 1;
     values["id"] = id;
     data.id = id;
+
     _phoneToUser.insert(data.phoneNumber, data);
 
     auto err = _storage.addEntry(_provider.data(), values, data);

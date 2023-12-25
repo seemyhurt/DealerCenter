@@ -12,9 +12,9 @@ struct UserData
 {
     int id;                 ///< Идентификатор записи
     quint64 phoneNumber;    ///< Номер телефона
-    QString firstName;      ///< Фамилия
-    QString lastName;       ///< Имя
-    QString surname;        ///< Отчество
+    QString lastName;       ///< Фамилия
+    QString firstName;      ///< Имя
+    QString patronymic;     ///< Отчество
     int age;                ///< Возраст
     QString type;           ///< Тип пользователя
     QString password;       ///< Пароль
@@ -24,9 +24,9 @@ struct UserData
         return QVariantMap {
             {"id", id},
             {"phoneNumber", phoneNumber},
-            {"firstName", firstName},
             {"lastName", lastName},
-            {"surname", surname},
+            {"firstName", firstName},
+            {"patronymic", patronymic},
             {"age", age},
             {"type", type},
             {"password", password}
@@ -36,11 +36,11 @@ struct UserData
     static UserData fromDBMap(const QVariantMap &variant)
     {
         UserData temp;
-        temp.id = variant.value("id").toInt();
+        temp.id = variant.value("id", 0).toInt();
         temp.phoneNumber = variant.value("phoneNumber").toLongLong();
-        temp.firstName = variant.value("firstName").toString();
         temp.lastName = variant.value("lastName").toString();
-        temp.surname = variant.value("surname").toString();
+        temp.firstName = variant.value("firstName").toString();
+        temp.patronymic = variant.value("patronymic").toString();
         temp.age = variant.value("age").toInt();
         temp.type = variant.value("type").toString();
         temp.password = variant.value("password").toString();
@@ -52,9 +52,9 @@ struct UserData
         return QVariantMap {
             {"ID", id},
             {"Phone number", phoneNumber},
-            {"Firstname", firstName},
-            {"Lastname", lastName},
-            {"Surname", surname},
+            {"Last name", lastName},
+            {"First name", firstName},
+            {"Patronymic", patronymic},
             {"Age", age},
             {"Type", type},
             {"Password", password}
@@ -66,9 +66,9 @@ struct UserData
         UserData temp;
         temp.id = variant.value("id", 0).toLongLong();
         temp.phoneNumber = variant.value("Phone number").toLongLong();
-        temp.firstName = variant.value("First name").toString();
         temp.lastName = variant.value("Last name").toString();
-        temp.surname = variant.value("Surname").toString();
+        temp.firstName = variant.value("First name").toString();
+        temp.patronymic = variant.value("Patronymic").toString();
         temp.age = variant.value("Age").toInt();
         temp.password = variant.value("Password").toString();
         return temp;
@@ -76,12 +76,12 @@ struct UserData
 
     static QStringList wigdetKeys()
     {
-        return QStringList {"ID", "Phone number", "Firstname", "Lastname", "Surname", "Age", "Type", "Password"};
+        return QStringList {"Phone number", "Last name", "First name", "Patronymic", "Age", "Type", "Password"};
     }
 
     static QStringList dBKeys()
     {
-        return QStringList {"id", "phoneNumber", "firstName", "lastName", "surname", "age", "type", "password"};
+        return QStringList {"id", "phoneNumber", "lastName", "firstName",  "patronymic", "age", "type", "password"};
     }
 };
 

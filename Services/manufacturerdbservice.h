@@ -36,6 +36,8 @@ public:
     ManufacturerData getManufacturerByName(const QString & name);
     ManufacturerData getManufacturerById(int id);
 
+    bool isManufacturerExists(const QString& name);
+
 signals:
     void manufacturerAdded(const ManufacturerData & data);
 

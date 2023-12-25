@@ -3,12 +3,14 @@
 
 #include <QWidget>
 #include <QSharedPointer>
+#include "../Common/transportdata.h"
 
 class ManufacturerDBService;
 class UserDBService;
 class TransportDBService;
 class PurchasesDBService;
 
+class QPushButton;
 class QComboBox;
 class QLineEdit;
 class QSpinBox;
@@ -27,7 +29,7 @@ class PurchaseWidget : public QWidget
 public:
     PurchaseWidget(const WidgetInterface interface, QWidget * parent = nullptr);
 
-    void setCurrentUser(quint64 number) { _currentUserNumber = number; };
+    void setCurrentUser(quint64 number);;
 
 private slots:
     void handleBrandChanged(const QString &brand);
@@ -37,8 +39,13 @@ private slots:
     void handleManufacturerAdded(const ManufacturerData & data);
     void handleModelChanged(const QString &model);
     void handleCreatePurchase();
-    void handleRecalculatePrice(int);
+    void handleRecheckWidgets();
     void handlePurchaseAdded(const PurchaseData &model);
+    void handleRecalculateCount();
+
+private:
+    int getCurrentTransportCount();
+    void recalculatePrice();
 
 private:
     QSharedPointer<ManufacturerDBService> _manufacturersService;
@@ -53,12 +60,14 @@ private:
 
     QComboBox * _availableModels;
     QComboBox * _availableYears;
+    QComboBox * _receiptDate;
 
     QLineEdit * _model;
     QLineEdit * _price;
     QSpinBox * _count;
 
-    quint64 _currentUserNumber;
+    QPushButton * _buttonBuy;
+    quint64 _currentUserNumber = 0;
 };
 
 #endif // PURCHASEWIDGET_H

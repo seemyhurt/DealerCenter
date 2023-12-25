@@ -15,7 +15,7 @@ public:
     /**
      * @brief Получение наследника QValidator
      */
-    static QValidator *validator(const QString &key);
+    static QValidator *validator(const QString &key, QObject *parent);
 
 private:
     static InputValidatorFactory _validatorFactory;

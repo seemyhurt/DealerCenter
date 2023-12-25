@@ -47,6 +47,9 @@ void ManufacturersModel::handleNeedUpdateManufacturers(const ManufacturerData& d
 bool ManufacturersModel::addNewManufacturer(const ManufacturerData& data)
 {
     auto manufacturerDbdata = data.toDBMap();
+    if (_manufacturersService->isManufacturerExists(data.name))
+        return false;
+
     if (_manufacturersService->addEntry(manufacturerDbdata).type() == QSqlError::NoError)
         return true;
     else return false;

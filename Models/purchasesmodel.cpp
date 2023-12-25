@@ -37,7 +37,8 @@ void PurchasesModel::setCurrentUser(quint64 number)
 
     clear();
     _currentUserNumber = number;
-    auto purchases = _purchaseService->getPurchasesByUser(number);
+    auto user = _userService->getUserByNumber(_currentUserNumber);
+    auto purchases = _purchaseService->getPurchasesByUser(user.id);
 
     for (const auto &purchaseData : qAsConst(purchases))
         generatePurchaseItem(purchaseData);
@@ -51,13 +52,15 @@ void PurchasesModel::handleNeedUpdatePurchase(const PurchaseData& data)
 void PurchasesModel::generatePurchaseItem(const PurchaseData &data)
 {
     auto dataDate = QDateTime::fromMSecsSinceEpoch(data.date).toString("dd.MM.yyyy HH:mm");
-    auto purchaseItem = new QStandardItem(QString("Покупка от ") + dataDate);
+    auto countStr = QStringLiteral(" of %1 units").arg(data.count);
+    auto priceStr = QStringLiteral(" worth %1").arg(data.price);
+    auto purchaseItem = new QStandardItem(QStringLiteral("Purchase on  ") + dataDate + countStr + priceStr);
 
     purchaseItem->setEditable(false);
 
-    auto manufacturerItem = new QStandardItem("Производитель");
-    auto userDataItem = new QStandardItem("Данные покупателя");
-    auto vehicleDataItem = new QStandardItem("Данные о транспортном средстве");
+    auto manufacturerItem = new QStandardItem("Manufacturer");
+    auto userDataItem = new QStandardItem("Buyer");
+    auto vehicleDataItem = new QStandardItem("Vehicle data");
 
     purchaseItem->appendRow(manufacturerItem);
     purchaseItem->appendRow(userDataItem);
@@ -98,7 +101,7 @@ void PurchasesModel::handleNeedModifyPurchase(const TransportData& data)
         for (int j = 0; j < purchaseItem->rowCount(); ++j)
         {
             auto child = purchaseItem->child(j);
-            if (child->text() != "Данные о транспортном средстве")
+            if (child->text() != "Vehicle data")
                 continue;
 
             auto count = child->rowCount();

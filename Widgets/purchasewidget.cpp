@@ -5,7 +5,6 @@
 #include "../Services/purchasesdbservice.h"
 #include "../Services/transportdbservice.h"
 #include "../Common/manufacturerdata.h"
-#include "../Common/transportdata.h"
 #include "../Common/purchasedata.h"
 
 #include <QComboBox>
@@ -20,8 +19,8 @@
 
 static QStringList getAvailableYears()
 {
-    static auto startYear = QDate(2000, 1, 1).year();
-    static auto currentYear = QDate::currentDate().year();
+    static const auto startYear = QDate(2000, 1, 1).year();
+    static const auto currentYear = QDate::currentDate().year();
 
     QStringList yearsList;
     yearsList.reserve(currentYear - startYear);
@@ -78,8 +77,6 @@ PurchaseWidget::PurchaseWidget(const WidgetInterface interface, QWidget *parent)
     auto lblCount = new QLabel("&Count", this);
     _count = new QSpinBox(this);
     lblCount->setBuddy(_count);
-    _count->setMaximum(100);
-    _count->setMinimum(1);
 
     auto lblPrice = new QLabel("&Price", this);
     _price = new QLineEdit(this);
@@ -95,15 +92,26 @@ PurchaseWidget::PurchaseWidget(const WidgetInterface interface, QWidget *parent)
     connect(_condition, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleConditionChanged);
     connect(_manufacturersService.data(), &ManufacturerDBService::manufacturerAdded, this, &PurchaseWidget::handleManufacturerAdded);
     connect(_manufacturer, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleManufacturerChanged);
-    connect(_count, SIGNAL(valueChanged(int)), this, SLOT(handleRecalculatePrice(int)));
+    connect(_count, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &PurchaseWidget::handleRecheckWidgets);
 
     if (isCustomerInterface)
     {
         connect(_availableModels, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleModelChanged);
         connect(_purchasesService.data(), &PurchasesDBService::purchaseAdded, this, &PurchaseWidget::handlePurchaseAdded);
+        connect(_availableYears, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleRecheckWidgets);
+
+        _count->setEnabled(false);
+        _count->setValue(0);
     }
-    auto buttonBuy = new QPushButton("Buy new car", this);
-    connect(buttonBuy, &QPushButton::clicked, this, &PurchaseWidget::handleCreatePurchase);
+    else
+    {
+        _count->setMaximum(100);
+        _count->setMinimum(1);
+        connect(_model, &QLineEdit::textChanged, this, &PurchaseWidget::handleRecheckWidgets);
+    }
+
+    _buttonBuy = new QPushButton("Make a purchase", this);
+    connect(_buttonBuy, &QPushButton::clicked, this, &PurchaseWidget::handleCreatePurchase);
 
     QGridLayout * layout = new QGridLayout(this);
 
@@ -120,15 +128,41 @@ PurchaseWidget::PurchaseWidget(const WidgetInterface interface, QWidget *parent)
     layout->addWidget(_condition, 4, 1, 1, 4);
     layout->addWidget(lblYear, 5, 0);
     layout->addWidget(_availableYears, 5, 1, 1, 4);
-    layout->addWidget(lblCount, 6, 0);
-    layout->addWidget(_count, 6, 1, 1, 4);
-    layout->addWidget(lblPrice, 7, 0);
-    layout->addWidget(_price, 7, 1, 1, 4);
-    layout->addWidget(buttonBuy, 8, 1, 1, 4);
+
+    if (isCustomerInterface)
+    {
+        auto lblDate = new QLabel("&Receipt date", this);
+        _receiptDate = new QComboBox(this);
+        lblDate->setBuddy(_price);
+
+        connect(_receiptDate, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleRecalculateCount);
+        connect(_availableYears, &QComboBox::currentTextChanged, this, &PurchaseWidget::handleRecalculateCount);
+
+        layout->addWidget(lblDate, 6, 0);
+        layout->addWidget(_receiptDate, 6, 1, 1, 4);
+        layout->addWidget(lblCount, 7, 0);
+        layout->addWidget(_count, 7, 1, 1, 4);
+        layout->addWidget(lblPrice, 8, 0);
+        layout->addWidget(_price, 8, 1, 1, 4);
+        layout->addWidget(_buttonBuy, 9, 1, 1, 4);
+    }
+    else
+    {
+        layout->addWidget(lblCount, 6, 0);
+        layout->addWidget(_count, 6, 1, 1, 4);
+        layout->addWidget(lblPrice, 7, 0);
+        layout->addWidget(_price, 7, 1, 1, 4);
+        layout->addWidget(_buttonBuy, 8, 1, 1, 4);
+    }
 
     setLayout(layout);
+}
+
+void PurchaseWidget::setCurrentUser(quint64 number)
+{
+    _currentUserNumber = number;
     handleTypeChanged(_type->currentText());
-    if (!isCustomerInterface)
+    if (_usersService->getUserByNumber(_currentUserNumber).type != QLatin1String("Customer"))
         handleConditionChanged(_condition->currentText());
 }
 
@@ -154,6 +188,9 @@ void PurchaseWidget::handleTypeChanged(const QString &type)
 
 void PurchaseWidget::handleManufacturerChanged(const QString &manufacturer)
 {
+    if (_currentUserNumber == 0)
+        return;
+
     if (_usersService->getUserByNumber(_currentUserNumber).type == QLatin1String("Customer"))
     {
         _availableModels->clear();
@@ -161,12 +198,15 @@ void PurchaseWidget::handleManufacturerChanged(const QString &manufacturer)
         if (!models.isEmpty())
             _availableModels->addItems(models);
     }
-    auto price = _manufacturersService->getManufacturerByName(manufacturer).basePrice;
-    return _price->setText(QStringLiteral("%1").arg(price));
+
+    handleRecheckWidgets();
 }
 
 void PurchaseWidget::handleConditionChanged(const QString &condition)
-{       
+{
+    if (_currentUserNumber == 0)
+        return;
+
     _availableYears->clear();
     if (condition == QLatin1String("New"))
     {
@@ -180,7 +220,7 @@ void PurchaseWidget::handleConditionChanged(const QString &condition)
             return _availableYears->addItems(getAvailableYears());
 
         auto key = _transportService->getTransportKey(_availableModels->currentText(), _manufacturer->currentText());
-        auto transports = _transportService->getTransportBykey(key);
+        auto transports = _transportService->getTransportByKey(key);
 
         QSet<int> years;
         for (const auto &transport : qAsConst(transports))
@@ -209,18 +249,26 @@ void PurchaseWidget::handleManufacturerAdded(const ManufacturerData & data)
 
 void PurchaseWidget::handleModelChanged(const QString &model)
 {
-    _condition->clear();
     auto key = _transportService->getTransportKey(model, _manufacturer->currentText());
-    auto transports = _transportService->getTransportBykey(key);
+    auto transports = _transportService->getTransportByKey(key);
+
+    _condition->clear();
+    _receiptDate->clear();
 
     QSet<QString> conditions;
-    _condition->clear();
+    QSet<QString> dates;
     for (const auto &transport : qAsConst(transports))
     {
         if (!conditions.contains(transport.condition))
         {
             conditions.insert(transport.condition);
             _condition->addItem(transport.condition);
+        }
+        auto date = QDateTime::fromMSecsSinceEpoch(transport.receiptDate).toString("dd.MM.yyyy");
+        if (!dates.contains(date))
+        {
+            dates.insert(date);
+            _receiptDate->addItem(date);
         }
     }
 }
@@ -232,7 +280,6 @@ void PurchaseWidget::handleCreatePurchase()
 
     TransportData data;
     data.manufacturer = manufacturer.name;
-    data.model = _model->text();
     data.year = _availableYears->currentText().toInt();
     data.count = _count->text().toInt();
     data.condition = _condition->currentText();
@@ -241,11 +288,24 @@ void PurchaseWidget::handleCreatePurchase()
     data.inStock = date.date() == QDate::currentDate();
     data.receiptDate = date.toMSecsSinceEpoch();
 
-    auto map = data.toDBMap();
-    if (_transportService->addEntry(map).type() != QSqlError::NoError)
+    if (user.type == QLatin1String("Customer"))
     {
-        QMessageBox::warning(this, "Error", "Failed to create transport");
-        return;
+        data.model = _availableModels->currentText();
+        if (!_transportService->modifyTransportData(data))
+        {
+            QMessageBox::warning(this, "Error", "Failed to create transport");
+            return;
+        }
+    }
+    else
+    {
+        data.model = _model->text();
+        auto map = data.toDBMap();
+        if (_transportService->addEntry(map).type() != QSqlError::NoError)
+        {
+            QMessageBox::warning(this, "Error", "Failed to create transport");
+            return;
+        }
     }
 
     PurchaseData purchase;
@@ -254,19 +314,29 @@ void PurchaseWidget::handleCreatePurchase()
     purchase.manufacturerId = manufacturer.id;
     purchase.userId = user.id;
     purchase.date = QDateTime::currentDateTime().toMSecsSinceEpoch();
+    purchase.price = _price->text().toLongLong();
 
     auto purchaseMap = purchase.toDBMap();
     if (_purchasesService->addEntry(purchaseMap).type() != QSqlError::NoError)
         QMessageBox::warning(this, "Error", "Failed to create purchase");
 }
 
-void PurchaseWidget::handleRecalculatePrice(int count)
+void PurchaseWidget::recalculatePrice()
 {
-    auto currentPrice = _manufacturersService->getManufacturerByName(_manufacturer->currentText()).basePrice;
-    _price->setText(QString::number(currentPrice * count));
+    if (_currentUserNumber == 0)
+        return;
+
+    auto manufacturer = _manufacturersService->getManufacturerByName(_manufacturer->currentText());
     if (_usersService->getUserByNumber(_currentUserNumber).type == QLatin1String("Customer"))
     {
+        auto date = QDateTime::fromString(_receiptDate->currentText(), "dd.MM.yyyy");
+        auto daysToReceipt = QDateTime::currentDateTime().daysTo(date);
+        if (daysToReceipt == 0) daysToReceipt = 1;
+        auto price  = manufacturer.basePrice * _count->value() * manufacturer.guaranteePeriod * 1 / daysToReceipt * (_availableYears->currentText().toInt() % 2000 + 1);
+        _price->setText(QString::number(price));
     }
+    else
+        _price->setText(QString::number(manufacturer.basePrice * _count->value()));
 }
 
 void PurchaseWidget::handlePurchaseAdded(const PurchaseData &purchase)
@@ -275,4 +345,70 @@ void PurchaseWidget::handlePurchaseAdded(const PurchaseData &purchase)
     auto index = _type->findText(manufacturer.type);
     if (index == _type->currentIndex())
         handleTypeChanged(manufacturer.type);
+}
+
+void PurchaseWidget::handleRecalculateCount()
+{
+    _count->setValue(0);
+    auto count = getCurrentTransportCount();
+    if (count != 0)
+    {
+        _count->setEnabled(true);
+        _count->setMaximum(count);
+    }
+    else
+        _count->setEnabled(false);
+}
+
+void PurchaseWidget::handleRecheckWidgets()
+{
+    if (_currentUserNumber == 0)
+        return;
+
+    if (_usersService->getUserByNumber(_currentUserNumber).type != QLatin1String("Customer"))
+    {
+        if (_model->text().isEmpty())
+            _buttonBuy->setEnabled(false);
+        else
+            _buttonBuy->setEnabled(true);
+    }
+    else
+    {
+        if (_availableModels->currentText().isEmpty() ||
+            _condition->currentText().isEmpty() ||
+            _availableYears->currentText().isEmpty() ||
+            _receiptDate->currentText().isEmpty() ||
+            _count->value() == 0)
+        {
+            _buttonBuy->setEnabled(false);
+        }
+        else
+            _buttonBuy->setEnabled(true);
+
+    }
+    recalculatePrice();
+}
+
+int PurchaseWidget::getCurrentTransportCount()
+{
+    auto key = _transportService->getTransportKey(_availableModels->currentText(), _manufacturer->currentText());
+    auto transports = _transportService->getTransportByKey(key);
+
+    quint64 date = QDateTime::fromString(_receiptDate->currentText(), "dd.MM.yyyy").toMSecsSinceEpoch();
+    TransportData data {0,
+                       _availableModels->currentText(),
+                       _availableYears->currentText().toInt(),
+                       0,
+                       _condition->currentText(),
+                       true,
+                       date,
+                       _manufacturer->currentText()
+    };
+
+    for (const auto &transport : qAsConst(transports))
+    {
+        if (data == transport)
+            return transport.count;
+    }
+    return 0;
 }
