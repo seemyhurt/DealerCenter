@@ -13,18 +13,18 @@ AdministratorWidget::AdministratorWidget(QSharedPointer<TransportsModel> transpo
                                          QSharedPointer<ManufacturersModel> manufacturerModel,
                                          QWidget *parent)
     : QWidget(parent),
-    _tabs(QSharedPointer<QTabWidget>::create(this)),
-    _customersWidget(QSharedPointer<CustomersTableWidget>::create(this)),
-    _manufacturersWidget(QSharedPointer<ManufacturersTableWidget>::create(manufacturerModel, true, this)),
-    _managersWidget(QSharedPointer<ManagersTableWidget>::create(this)),
-    _transportsWidget(QSharedPointer<TransportTableWidget>::create(transportModel, this))
+    _tabs(new QTabWidget(this)),
+    _customersWidget(new CustomersTableWidget(this)),
+    _manufacturersWidget(new ManufacturersTableWidget(manufacturerModel, true, this)),
+    _managersWidget(new ManagersTableWidget(this)),
+    _transportsWidget(new TransportTableWidget(transportModel, this))
 {
-    _tabs->addTab(_customersWidget.data(), "Customers");
-    _tabs->addTab(_manufacturersWidget.data(), "Manufacturers");
-    _tabs->addTab(_managersWidget.data(), "Managers");
-    _tabs->addTab(_transportsWidget.data(), "Transport");
+    _tabs->addTab(_customersWidget, "Customers");
+    _tabs->addTab(_manufacturersWidget, "Manufacturers");
+    _tabs->addTab(_managersWidget, "Managers");
+    _tabs->addTab(_transportsWidget, "Transport");
 
     QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->addWidget(_tabs.data());
+    layout->addWidget(_tabs);
     setLayout(_tabs->layout());
 }

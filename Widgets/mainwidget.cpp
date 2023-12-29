@@ -43,12 +43,12 @@ MainWidget::MainWidget(QWidget *parent)
     _administratorWidget->hide();
     _managerWidget->hide();
     _customerWidget->hide();
+    _help->hide();
 
     layout->addWidget(_customerWidget);
     layout->addWidget(_administratorWidget);
     layout->addWidget(_managerWidget);
     layout->addWidget(_help);
-    _lastAddedWidet = _help;
 
     connect(_menu, &AppMenu::menuInterfaceChanged, this, &MainWidget::handleNeedChangeInterface);
     connect(_menu, &AppMenu::needShowHelp, this, &MainWidget::handleNeedShowHelp);

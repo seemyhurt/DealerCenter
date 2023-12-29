@@ -13,14 +13,16 @@ find_package(QT NAMES Qt5 REQUIRED COMPONENTS Widgets Sql)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Sql)
 
 set(PROJECT_SOURCES
+    Widgets/Dialogs/inputuserdialog.cpp
+    Widgets/Dialogs/iinputdialogbase.cpp
+    Widgets/Dialogs/logindialog.cpp
+    Widgets/Dialogs/inputmanufacturerdialog.cpp
+    Widgets/Dialogs/inputvalidatorfactory.cpp
+
     Widgets/appmenu.cpp
     Widgets/customerwidget.cpp
     Widgets/administratorwidget.cpp
-    Widgets/inputuserdialog.cpp
-    Widgets/iinputdialogbase.cpp
-    Widgets/logindialog.cpp
     Widgets/mainwidget.cpp
-    Widgets/inputmanufacturerdialog.cpp
     Widgets/customerstablewidget.cpp
     Widgets/manufacturerstablewidget.cpp
     Widgets/managerstablewidget.cpp
@@ -47,19 +49,20 @@ set(PROJECT_SOURCES
     Models/transportsmodel.cpp
     Models/purchasesmodel.cpp
 
-    inputvalidatorfactory.cpp
     main.cpp
 )
 
 set(PROJECT_HEADERS
+    Widgets/Dialogs/logindialog.h
+    Widgets/Dialogs/inputuserdialog.h
+    Widgets/Dialogs/iinputdialogbase.h
+    Widgets/Dialogs/inputmanufacturerdialog.h
+    Widgets/Dialogs/inputvalidatorfactory.h
+
     Widgets/appmenu.h
     Widgets/customerwidget.h
-    Widgets/logindialog.h
     Widgets/administratorwidget.h
-    Widgets/inputuserdialog.h
-    Widgets/iinputdialogbase.h
     Widgets/mainwidget.h
-    Widgets/inputmanufacturerdialog.h
     Widgets/customerstablewidget.h
     Widgets/manufacturerstablewidget.h
     Widgets/managerstablewidget.h
@@ -92,9 +95,7 @@ set(PROJECT_HEADERS
 
     Models/manufacturersmodel.h
     Models/transportsmodel.h
-    Models/purchasesmodel.h
-
-    inputvalidatorfactory.h
+    Models/purchasesmodel.h    
 )
 
 add_executable(DilerCenter

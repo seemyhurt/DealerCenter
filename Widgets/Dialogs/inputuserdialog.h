@@ -1,7 +1,7 @@
 #ifndef INPUTUSERDIALOG_H
 #define INPUTUSERDIALOG_H
 
-#include "../Common/userdata.h"
+#include "../../Common/userdata.h"
 #include "iinputdialogbase.h"
 #include <QVariantMap>
 

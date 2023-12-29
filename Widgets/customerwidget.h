@@ -30,9 +30,9 @@ private slots:
 
 private:
     QSharedPointer<UserDBService> _service;
-    QSharedPointer<TransportTableWidget> _transportsWidget;
-    QSharedPointer<PurchaseWidget> _purchasesWidget;
-    QSharedPointer<PurchasesTableWidget> _purchasesTableWidget;
+    TransportTableWidget * _transportsWidget;
+    PurchaseWidget * _purchasesWidget;
+    PurchasesTableWidget * _purchasesTableWidget;
 };
 
 #endif // CUSTOMERWIDGET_H

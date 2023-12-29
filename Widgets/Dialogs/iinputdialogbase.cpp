@@ -1,10 +1,10 @@
 #include "iinputdialogbase.h"
+#include "inputvalidatorfactory.h"
 
 #include <QLineEdit>
 #include <QLabel>
 #include <QPushButton>
 #include <QGridLayout>
-#include "../inputvalidatorfactory.h"
 
 IInputDialogBase::IInputDialogBase(const QStringList & params, QWidget *pwgt)
     : QDialog(pwgt, Qt::WindowTitleHint | Qt::WindowSystemMenuHint)

@@ -125,16 +125,3 @@ void PurchasesModel::handleNeedModifyPurchase(const TransportData& data)
         }
     }
 }
-
-QVariant PurchasesModel::data(const QModelIndex &index, int role) const
-{
-    if (!index.isValid())
-        return QVariant();
-
-    auto item = itemFromIndex(index);
-
-    if (role == Qt::DisplayRole || role == Qt::EditRole || role == Qt::UserRole)
-        return item->text();
-
-    return QVariant();
-}

@@ -14,7 +14,7 @@ ManufacturersModel::ManufacturersModel(QObject * parent) :
 
     for (const auto &manufacturer : qAsConst(manufacturers))
     {
-        auto manufacturerMap = manufacturer.toMap();
+        auto manufacturerMap = manufacturer.toWidgetMap();
 
         QList<QStandardItem*> rowItems;
         for (const auto &key : qAsConst(keys))
@@ -53,9 +53,4 @@ bool ManufacturersModel::addNewManufacturer(const ManufacturerData& data)
     if (_manufacturersService->addEntry(manufacturerDbdata).type() == QSqlError::NoError)
         return true;
     else return false;
-}
-
-QStringList ManufacturersModel::getAvailableBrands()
-{
-    return _manufacturersService->getAvailableBrands();
 }

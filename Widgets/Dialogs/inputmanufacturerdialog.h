@@ -2,7 +2,7 @@
 #define INPUTMANUFACTURERDIALOG_H
 
 
-#include "../Common/manufacturerdata.h"
+#include "../../Common/manufacturerdata.h"
 #include "iinputdialogbase.h"
 #include <QVariantMap>
 

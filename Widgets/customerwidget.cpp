@@ -1,6 +1,6 @@
 #include "customerwidget.h"
-#include "inputuserdialog.h"
-#include "logindialog.h"
+#include "Dialogs/inputuserdialog.h"
+#include "Dialogs/logindialog.h"
 #include "../Services/servicelocator.h"
 #include "../Services/userdbservice.h"
 #include "purchasewidget.h"
@@ -22,9 +22,9 @@ CustomerWidget::CustomerWidget(QSharedPointer<TransportsModel> transportModel,
                                QWidget *parent)
     : QWidget(parent),
     _service(ServiceLocator::service<UserDBService>()),
-    _transportsWidget(QSharedPointer<TransportTableWidget>::create(transportModel, this)),
-    _purchasesWidget(QSharedPointer<PurchaseWidget>::create(WidgetInterface::Customer, this)),
-    _purchasesTableWidget(QSharedPointer<PurchasesTableWidget>::create(purchaseModel, this))
+    _transportsWidget(new TransportTableWidget(transportModel, this)),
+    _purchasesWidget(new PurchaseWidget(WidgetInterface::Customer, this)),
+    _purchasesTableWidget(new PurchasesTableWidget(purchaseModel, this))
 {
     auto groupPurchase = new QGroupBox("Purchase form: ", this);
     auto groupTransports = new QGroupBox("Transports: ", this);
@@ -33,11 +33,11 @@ CustomerWidget::CustomerWidget(QSharedPointer<TransportsModel> transportModel,
     auto layout = new QHBoxLayout(this);
 
     auto layoutTransport = new QVBoxLayout(this);
-    layoutTransport->addWidget(_transportsWidget.data());
+    layoutTransport->addWidget(_transportsWidget);
     groupTransports->setLayout(layoutTransport);
 
     auto layoutPurchase = new QVBoxLayout(this);
-    layoutPurchase->addWidget(_purchasesTableWidget.data());
+    layoutPurchase->addWidget(_purchasesTableWidget);
     groupPurchases->setLayout(layoutPurchase);
 
     auto layoutLeft = new QVBoxLayout(this);
@@ -47,7 +47,7 @@ CustomerWidget::CustomerWidget(QSharedPointer<TransportsModel> transportModel,
     layoutRight->addWidget(groupPurchase);
     layoutRight->addWidget(groupPurchases);
 
-    groupPurchase->setLayout(_purchasesWidget.data()->layout());
+    groupPurchase->setLayout(_purchasesWidget->layout());
 
     layout->addLayout(layoutLeft, 8);
     layout->addLayout(layoutRight, 3);

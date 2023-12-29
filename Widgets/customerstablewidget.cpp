@@ -25,7 +25,7 @@ CustomersTableWidget::CustomersTableWidget(QWidget *parent)
     auto users = _userService->getAllCustomers();
     for (const auto &user : qAsConst(users))
     {
-        auto userMap = user.toMap();
+        auto userMap = user.toWidgetMap();
 
         QList<QStandardItem*> rowItems;
         for (const auto &key : qAsConst(keys))

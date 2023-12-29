@@ -31,7 +31,7 @@ QSqlError PurchasesDBService::addEntry(QVariantMap &values)
 
     if (_storage.elements().contains(data.id))
     {
-        updatePurchases(data);
+        modifyPurchase(data);
         auto err = _storage.addEntry(_provider.data(), values, data);
         if (err.type() == QSqlError::NoError)
             emit purchaseModified(data);
@@ -80,7 +80,7 @@ void PurchasesDBService::selectDataFromStorage()
     }
 }
 
-void PurchasesDBService::updatePurchases(const PurchaseData &data)
+void PurchasesDBService::modifyPurchase(const PurchaseData &data)
 {
     for (auto &purchase : _purchasesByUser[data.userId])
     {

@@ -25,13 +25,9 @@ public:
      */
     static QString baseKey();
 
-    QVariantList getAllCustomers();
-    QVariantList getAllManagers();
+    QVector<UserData> getAllCustomers();
+    QVector<UserData> getAllManagers();
 
-signals:
-    void userAdded(const UserData & data);
-
-public:
     bool isCustomerExist(quint64 number);
     bool isManagerExist(quint64 number);
     bool isUserExist(quint64 number);
@@ -39,6 +35,9 @@ public:
     UserData getUserByNumber(quint64 number);
     UserData getUserById(int id);
     bool isPasswordCorrect(quint64 number, const QString & password);
+
+signals:
+    void userAdded(const UserData & data);
 
 protected slots:
     /**

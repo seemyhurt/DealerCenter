@@ -93,26 +93,28 @@ void UserDBService::selectDataFromStorage()
         _phoneToUser.insert(element.phoneNumber, element);
 }
 
-QVariantList UserDBService::getAllCustomers()
+QVector<UserData> UserDBService::getAllCustomers()
 {
-    QVariantList result;
+    QVector<UserData> result;
+    result.reserve(_storage.size());
     for (const auto & element : qAsConst(_storage.elements()))
     {
         if (element.type != QLatin1String("Customer"))
             continue;
-        result << element.toWidgetMap();
+        result << element;
     }
     return result;
 }
 
-QVariantList UserDBService::getAllManagers()
+QVector<UserData> UserDBService::getAllManagers()
 {
-    QVariantList result;
+    QVector<UserData> result;
+    result.reserve(_storage.size());
     for (const auto & element : qAsConst(_storage.elements()))
     {
         if (element.type != QLatin1String("Manager"))
             continue;
-        result << element.toWidgetMap();
+        result << element;
     }
     return result;
 }

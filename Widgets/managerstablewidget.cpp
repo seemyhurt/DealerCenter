@@ -1,5 +1,5 @@
 #include "managerstablewidget.h"
-#include "inputuserdialog.h"
+#include "Dialogs/inputuserdialog.h"
 
 #include "../Services/servicelocator.h"
 #include "../Services/userdbservice.h"
@@ -30,7 +30,7 @@ ManagersTableWidget::ManagersTableWidget(QWidget *parent)
     auto managers = _usersService->getAllManagers();
     for (const auto &user : qAsConst(managers))
     {
-        auto userMap = user.toMap();
+        auto userMap = user.toWidgetMap();
 
         QList<QStandardItem*> rowItems;
         for (const auto &key : qAsConst(keys))

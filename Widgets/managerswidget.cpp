@@ -1,7 +1,8 @@
 #include "managerswidget.h"
 
+#include "Dialogs/logindialog.h"
+
 #include "purchasewidget.h"
-#include "logindialog.h"
 #include "transporttablewidget.h"
 #include "manufacturerstablewidget.h"
 #include "purchasestablewidget.h"
@@ -28,10 +29,10 @@ ManagersWidget::ManagersWidget(QSharedPointer<PurchasesModel> purchasesModel,
                                QWidget *parent)
     : QWidget(parent),
     _service(ServiceLocator::service<UserDBService>()),
-    _manufacturersWidget(QSharedPointer<ManufacturersTableWidget>::create(manufacturersModel, false)),
-    _transportsWidget(QSharedPointer<TransportTableWidget>::create(transportsModel)),
-    _purchasesWidget(QSharedPointer<PurchaseWidget>::create(WidgetInterface::Manager, this)),
-    _purchasesTableWidget(QSharedPointer<PurchasesTableWidget>::create(purchasesModel, this))
+    _manufacturersWidget(new ManufacturersTableWidget(manufacturersModel, false)),
+    _transportsWidget(new TransportTableWidget(transportsModel)),
+    _purchasesWidget(new PurchaseWidget(WidgetInterface::Manager, this)),
+    _purchasesTableWidget(new PurchasesTableWidget(purchasesModel, this))
 {
     auto groupPurchase = new QGroupBox("Purchase form: ", this);
     auto groupManufacturers = new QGroupBox("Manufacturers: ", this);
@@ -41,15 +42,15 @@ ManagersWidget::ManagersWidget(QSharedPointer<PurchasesModel> purchasesModel,
     auto layout = new QHBoxLayout(this);
 
     auto layoutManufacturers = new QVBoxLayout(this);
-    layoutManufacturers->addWidget(_manufacturersWidget.data());
+    layoutManufacturers->addWidget(_manufacturersWidget);
     groupManufacturers->setLayout(layoutManufacturers);
 
     auto layoutTransport = new QVBoxLayout(this);
-    layoutTransport->addWidget(_transportsWidget.data());
+    layoutTransport->addWidget(_transportsWidget);
     groupTransports->setLayout(layoutTransport);
 
     auto layoutPurchase = new QVBoxLayout(this);
-    layoutPurchase->addWidget(_purchasesTableWidget.data());
+    layoutPurchase->addWidget(_purchasesTableWidget);
     groupPurchases->setLayout(layoutPurchase);
 
     auto layoutLeft = new QVBoxLayout(this);
@@ -60,7 +61,7 @@ ManagersWidget::ManagersWidget(QSharedPointer<PurchasesModel> purchasesModel,
     layoutRight->addWidget(groupPurchase);
     layoutRight->addWidget(groupPurchases);
 
-    groupPurchase->setLayout(_purchasesWidget.data()->layout());
+    groupPurchase->setLayout(_purchasesWidget->layout());
 
     layout->addLayout(layoutLeft, 8);
     layout->addLayout(layoutRight, 3);

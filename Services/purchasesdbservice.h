@@ -42,7 +42,7 @@ signals:
 private:
     void selectDataFromStorage();
 
-    void updatePurchases(const PurchaseData &data);
+    void modifyPurchase(const PurchaseData &data);
 
 private:
     DatabaseCommon::LocalDBStorage<PurchaseData> _storage;

@@ -70,11 +70,12 @@ void ManufacturerDBService::selectDataFromStorage()
     }
 }
 
-QVariantList ManufacturerDBService::getAllManufacturers()
+QVector<ManufacturerData> ManufacturerDBService::getAllManufacturers()
 {
-    QVariantList result;
+    QVector<ManufacturerData> result;
+    result.reserve(_storage.size());
     for (const auto & element : qAsConst(_storage.elements()))
-        result << element.toWidgetMap();
+        result << element;
     return result;
 }
 

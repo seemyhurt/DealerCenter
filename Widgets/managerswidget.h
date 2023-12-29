@@ -26,10 +26,10 @@ public:
 
 private:
     QSharedPointer<UserDBService> _service;
-    QSharedPointer<ManufacturersTableWidget> _manufacturersWidget;
-    QSharedPointer<TransportTableWidget> _transportsWidget;
-    QSharedPointer<PurchaseWidget> _purchasesWidget;
-    QSharedPointer<PurchasesTableWidget> _purchasesTableWidget;
+    ManufacturersTableWidget * _manufacturersWidget;
+    TransportTableWidget * _transportsWidget;
+    PurchaseWidget * _purchasesWidget;
+    PurchasesTableWidget * _purchasesTableWidget;
 };
 
 #endif // MANAGERSWIDGET_H

@@ -5,7 +5,6 @@
 #include <QSharedPointer>
 
 class QTabWidget;
-class QStandardItemModel;
 
 class CustomersTableWidget;
 class ManufacturersTableWidget;
@@ -23,11 +22,11 @@ public:
                         QWidget * parent = nullptr);
 
 private:
-    QSharedPointer<QTabWidget> _tabs;
-    QSharedPointer<CustomersTableWidget> _customersWidget;
-    QSharedPointer<ManufacturersTableWidget> _manufacturersWidget;
-    QSharedPointer<ManagersTableWidget> _managersWidget;
-    QSharedPointer<TransportTableWidget> _transportsWidget;
+    QTabWidget * _tabs;
+    CustomersTableWidget * _customersWidget;
+    ManufacturersTableWidget * _manufacturersWidget;
+    ManagersTableWidget * _managersWidget;
+    TransportTableWidget * _transportsWidget;
 };
 
 #endif // ADMINISTRATORWIDGET_H

@@ -1,5 +1,5 @@
 #include "manufacturerstablewidget.h"
-#include "inputmanufacturerdialog.h"
+#include "Dialogs/inputmanufacturerdialog.h"
 
 #include "../Models/manufacturersmodel.h"
 #include "../Common/manufacturerdata.h"

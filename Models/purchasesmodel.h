@@ -24,7 +24,6 @@ private slots:
 
 private:
     void generatePurchaseItem(const PurchaseData& data);
-    QVariant data(const QModelIndex &index, int role) const override;
 
 private:
     QSharedPointer<PurchasesDBService> _purchaseService;

@@ -14,8 +14,6 @@ public:
 
     bool addNewManufacturer(const ManufacturerData& data);
 
-    QStringList getAvailableBrands();
-
 private slots:
     void handleNeedUpdateManufacturers(const ManufacturerData& data);
 

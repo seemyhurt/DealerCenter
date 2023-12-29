@@ -18,14 +18,9 @@ public:
     quint64 tableSize() const override;
     QSqlError addEntry(QVariantMap &values) override;
     QSqlError removeEntry(quint64 id) override;
+    static QString baseKey();
 
     bool modifyTransportData(const TransportData & data);
-
-    /**
-     * @brief Возвращает уникальный ключ сервиса
-     * @return Строка с ключом
-     */
-    static QString baseKey();
 
     QVector<TransportData> getAllTransport();
 
@@ -34,7 +29,7 @@ public:
     QStringList getManufacturersModels(const QString& name);
 
     int getInsertTransportId();
-     QString getTransportKey(const QString &model, const QString &manufacturer);
+    QString getTransportKey(const QString &model, const QString &manufacturer);
 
 protected slots:
     /**

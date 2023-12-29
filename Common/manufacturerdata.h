@@ -92,7 +92,7 @@ struct ManufacturerData
     static QStringList CustomerKeys()
     {
         return QStringList {"Type", "Brand", "Guarantee, years" };
-    }
+    }   
 };
 
 #endif // MANUFACTURERDATA_H
