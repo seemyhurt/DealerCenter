@@ -83,6 +83,50 @@ struct UserData
     {
         return QStringList {"id", "phoneNumber", "lastName", "firstName",  "patronymic", "age", "type", "password"};
     }
+
+    inline bool isValid()
+    {
+        static const int MaxStringSize = 30;
+        if (lastName.isEmpty() ||
+            firstName.isEmpty() ||
+            patronymic.isEmpty() ||
+            type.isEmpty() ||
+            password.isEmpty())
+        {
+            return false;
+        }
+
+        if (!lastName.at(0).isUpper() ||
+            !firstName.at(0).isUpper() ||
+            !patronymic.at(0).isUpper() ||
+            !type.at(0).isUpper())
+        {
+            return false;
+        }
+
+        if (lastName.size() > MaxStringSize ||
+            firstName.size() > MaxStringSize ||
+            patronymic.size() > MaxStringSize ||
+            type.size() > MaxStringSize ||
+            password.size() > MaxStringSize)
+        {
+            return false;
+        }
+
+        if (age <= 0 ||
+            age > 100)
+        {
+            return false;
+        }
+
+        if (phoneNumber <= 80000000000 ||
+            phoneNumber > 89999999999)
+        {
+            return false;
+        }
+
+        return true;
+    }
 };
 
 #endif // USERDATA_H

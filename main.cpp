@@ -15,16 +15,17 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     initServices();
-    a.setWindowIcon(QIcon(":/Icon/icon.png"));
+    a.setWindowIcon(QIcon(":/Other/icon.png"));
 
     MainWidget w;
+    w.setWindowTitle("Dealer Center");
     w.show();
     return a.exec();
 }
 
 void initServices()
 {
-    auto core = QSharedPointer<CoreService>::create("DilerCenter");
+    auto core = QSharedPointer<CoreService>::create("DealerCenter");
     ServiceLocator::addService(core);
 
     auto userService = QSharedPointer<UserDBService>::create();

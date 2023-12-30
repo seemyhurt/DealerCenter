@@ -6,6 +6,7 @@
 #include "../Services/transportdbservice.h"
 #include "../Common/manufacturerdata.h"
 #include "../Common/purchasedata.h"
+#include "../Common/transportdata.h"
 
 #include <QComboBox>
 #include <QPushButton>
@@ -164,6 +165,7 @@ void PurchaseWidget::setCurrentUser(quint64 number)
     handleTypeChanged(_type->currentText());
     if (_usersService->getUserByNumber(_currentUserNumber).type != QLatin1String("Customer"))
         handleConditionChanged(_condition->currentText());
+    handleRecheckWidgets();
 }
 
 void PurchaseWidget::handleBrandChanged(const QString &brand)
@@ -207,6 +209,8 @@ void PurchaseWidget::handleConditionChanged(const QString &condition)
     if (_currentUserNumber == 0)
         return;
 
+    QList<TransportData> transports;
+
     _availableYears->clear();
     if (condition == QLatin1String("New"))
     {
@@ -220,7 +224,7 @@ void PurchaseWidget::handleConditionChanged(const QString &condition)
             return _availableYears->addItems(getAvailableYears());
 
         auto key = _transportService->getTransportKey(_availableModels->currentText(), _manufacturer->currentText());
-        auto transports = _transportService->getTransportByKey(key);
+        transports = _transportService->getTransportByKey(key);
 
         QSet<int> years;
         for (const auto &transport : qAsConst(transports))
@@ -230,6 +234,28 @@ void PurchaseWidget::handleConditionChanged(const QString &condition)
                 years.insert(transport.year);
                 _availableYears->addItem(QString::number(transport.year));
             }
+        }
+    }
+
+    if (_usersService->getUserByNumber(_currentUserNumber).type != QLatin1String("Customer"))
+        return;
+
+    auto key = _transportService->getTransportKey(_availableModels->currentText(), _manufacturer->currentText());
+    _receiptDate->clear();
+    if (transports.isEmpty())
+        transports = _transportService->getTransportByKey(key);
+
+    QSet<QString> dates;
+    for (const auto &transport : qAsConst(transports))
+    {
+        if (transport.receiptDate == 0)
+            continue;
+
+        auto date = QDateTime::fromMSecsSinceEpoch(transport.receiptDate).toString("dd.MM.yyyy");
+        if (!dates.contains(date) && transport.condition == condition)
+        {
+            dates.insert(date);
+            _receiptDate->addItem(date);
         }
     }
 }
@@ -255,20 +281,13 @@ void PurchaseWidget::handleModelChanged(const QString &model)
     _condition->clear();
     _receiptDate->clear();
 
-    QSet<QString> conditions;
-    QSet<QString> dates;
+    QSet<QString> conditions; 
     for (const auto &transport : qAsConst(transports))
     {
         if (!conditions.contains(transport.condition))
         {
             conditions.insert(transport.condition);
             _condition->addItem(transport.condition);
-        }
-        auto date = QDateTime::fromMSecsSinceEpoch(transport.receiptDate).toString("dd.MM.yyyy");
-        if (!dates.contains(date))
-        {
-            dates.insert(date);
-            _receiptDate->addItem(date);
         }
     }
 }
@@ -285,7 +304,6 @@ void PurchaseWidget::handleCreatePurchase()
     data.condition = _condition->currentText();
 
     auto date = QDateTime::currentDateTime().addDays(manufacturer.deliveryTime);
-    data.inStock = date.date() == QDate::currentDate();
     data.receiptDate = date.toMSecsSinceEpoch();
 
     if (user.type == QLatin1String("Customer"))
@@ -400,7 +418,6 @@ int PurchaseWidget::getCurrentTransportCount()
                        _availableYears->currentText().toInt(),
                        0,
                        _condition->currentText(),
-                       true,
                        date,
                        _manufacturer->currentText()
     };

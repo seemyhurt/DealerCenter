@@ -78,6 +78,9 @@ void MainWidget::handleNeedChangeInterface(const QString & type)
         _managerWidget->show();
         break;
     case Interface::Administrator:
+        if (!_administratorWidget->loginAdministrator())
+            break;
+
         if(_lastAddedWidet)
             _lastAddedWidet->hide();
 

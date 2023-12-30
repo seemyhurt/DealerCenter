@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QSharedPointer>
-#include "../Common/transportdata.h"
+
 
 class ManufacturerDBService;
 class UserDBService;
@@ -29,7 +29,7 @@ class PurchaseWidget : public QWidget
 public:
     PurchaseWidget(const WidgetInterface interface, QWidget * parent = nullptr);
 
-    void setCurrentUser(quint64 number);;
+    void setCurrentUser(quint64 number);
 
 private slots:
     void handleBrandChanged(const QString &brand);

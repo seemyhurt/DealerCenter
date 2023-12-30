@@ -23,9 +23,6 @@ PurchasesModel::PurchasesModel(QObject * parent) :
     for (const auto &purchaseData : qAsConst(purchases))
         generatePurchaseItem(purchaseData);
 
-    setSortRole(Qt::UserRole);
-    sort(0, Qt::DescendingOrder);
-
     connect(_purchaseService.data(), &PurchasesDBService::purchaseAdded, this, &PurchasesModel::handleNeedUpdatePurchase);
     connect(_transportService.data(), &TransportDBService::transportModified, this, &PurchasesModel::handleNeedModifyPurchase);
 }
@@ -95,6 +92,7 @@ void PurchasesModel::generatePurchaseItem(const PurchaseData &data)
 
 void PurchasesModel::handleNeedModifyPurchase(const TransportData& data)
 {
+    auto transportMap = data.toWidgetMap();
     for (int i = 0; i < rowCount(); ++i)
     {
         auto purchaseItem = item(i);
@@ -104,23 +102,42 @@ void PurchasesModel::handleNeedModifyPurchase(const TransportData& data)
             if (child->text() != "Vehicle data")
                 continue;
 
+            bool isFind = true;
             auto count = child->rowCount();
             for (int k = 0; k < count; ++k)
             {
                 auto values = child->child(k);
                 auto value = values->text();
-                auto list = value.split(":", QString::SkipEmptyParts);
-                if (list[0] != "ID")
+                auto list = value.split(": ", QString::SkipEmptyParts);
+
+                if (list.size() != 2)
                     continue;
 
-                if (list[1].toInt() != data.id)
-                    break;
+                if (list[0] == "Count")
+                    continue;
 
-                child->removeRows(k, count);
-                auto transportMap = data.toWidgetMap();
-                auto transportKey = TransportData::wigdetKeys();
-                for (const auto &key : qAsConst(transportKey))
-                    child->appendRow(new QStandardItem(QString("%1: %2").arg(key, transportMap.value(key).toString())));
+                if (list[0] == "Receipt date")
+                    continue;
+
+                auto val = transportMap.value(list[0]).toString();
+                if (list[1] != val)
+                {
+                    isFind = false;
+                    break;
+                }
+            }
+            if (!isFind)
+                continue;
+
+            purchaseItem->removeRow(j);
+
+            auto vehicleDataItem = new QStandardItem("Vehicle data");
+            purchaseItem->appendRow(vehicleDataItem);
+            auto transportKey = TransportData::wigdetKeys();
+            for (const auto &key : qAsConst(transportKey))
+            {
+                auto item = new QStandardItem(QString("%1: %2").arg(key, transportMap.value(key).toString()));
+                vehicleDataItem->appendRow(item);
             }
         }
     }

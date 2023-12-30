@@ -49,6 +49,12 @@ void ManufacturersTableWidget::handleNeedAddManufacturer()
 
     auto manufacturer = dialog->getDialogInfo();
 
+    if (!manufacturer.isValid())
+    {
+        QMessageBox::warning(this, "Error", "Wrong manufacturer data!");
+        return;
+    }
+
     if (_manufacturersModel->addNewManufacturer(manufacturer))
         QMessageBox::information(this, "Successfully added", "Manufacturer successfully added!");
     else

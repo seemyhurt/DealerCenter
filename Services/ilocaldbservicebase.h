@@ -4,8 +4,6 @@
 #include "iservice.h"
 #include <QSqlError>
 
-namespace DatabaseCommon {
-
 class ILocalDBServiceBase : public IService
 {
     Q_OBJECT
@@ -32,7 +30,5 @@ public:
      */
     virtual QSqlError removeEntry(quint64 id) = 0;
 };
-
-} // namespace DatabaseCommon
 
 #endif // ILOCALDBSERVICEBASE_H

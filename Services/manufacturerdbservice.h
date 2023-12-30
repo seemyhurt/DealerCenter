@@ -8,7 +8,7 @@
 struct ManufacturerData;
 class ManufacturerDBProvider;
 
-class ManufacturerDBService : public DatabaseCommon::ILocalDBServiceBase
+class ManufacturerDBService : public ILocalDBServiceBase
 {
     Q_OBJECT
 public:

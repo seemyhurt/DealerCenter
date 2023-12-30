@@ -90,6 +90,13 @@ void CustomerWidget::handleRegisterUser()
     auto user = dialog->getDialogInfo();
 
     user.type = "Customer";
+
+    if (!user.isValid())
+    {
+        QMessageBox::warning(this, "Error", "Wrong user data!");
+        return;
+    }
+
     auto userDbdata = user.toDBMap();
 
     if (_service->isUserExist(user.phoneNumber))

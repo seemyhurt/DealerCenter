@@ -8,7 +8,7 @@
 class PurchaseDBProvider;
 struct PurchaseData;
 
-class PurchasesDBService : public DatabaseCommon::ILocalDBServiceBase
+class PurchasesDBService : public ILocalDBServiceBase
 {
     Q_OBJECT
 public:

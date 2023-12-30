@@ -12,6 +12,7 @@ class ManagersTableWidget;
 class TransportTableWidget;
 class TransportsModel;
 class ManufacturersModel;
+class UserDBService;
 
 class AdministratorWidget : public QWidget
 {
@@ -21,12 +22,18 @@ public:
                         QSharedPointer<ManufacturersModel> manufacturerModel,
                         QWidget * parent = nullptr);
 
+    bool loginAdministrator();
+
+private:
+    bool registerAdministrator();
+
 private:
     QTabWidget * _tabs;
     CustomersTableWidget * _customersWidget;
     ManufacturersTableWidget * _manufacturersWidget;
     ManagersTableWidget * _managersWidget;
     TransportTableWidget * _transportsWidget;
+    QSharedPointer<UserDBService> _service;
 };
 
 #endif // ADMINISTRATORWIDGET_H

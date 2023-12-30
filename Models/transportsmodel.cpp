@@ -67,7 +67,7 @@ void TransportsModel::handleNeedModifyTransports(const TransportData &data)
     for (int i = 0; i < rows; ++i)
     {
         bool isFind = true;
-        int countField;
+        int countField = 0, dateField = 0;
 
         for (int j = 0; j < columns; ++j)
         {
@@ -78,6 +78,12 @@ void TransportsModel::handleNeedModifyTransports(const TransportData &data)
             if (key == "Count")
             {
                 countField = j;
+                continue;
+            }
+
+            if (key == "Receipt date")
+            {
+                dateField = j;
                 continue;
             }
 
@@ -103,6 +109,12 @@ void TransportsModel::handleNeedModifyTransports(const TransportData &data)
         auto countItem = item(i, countField);
         if (countItem)
             countItem->setData(data.count, Qt::DisplayRole);
+
+        auto dateItem = item(i, dateField);
+        if (dateItem)
+            dateItem->setData(data.receiptDate == 0 ? "Unavailable"
+                                                    : QDateTime::fromMSecsSinceEpoch(data.receiptDate).toString("dd.MM.yyyy"),
+                              Qt::DisplayRole);
         return;
     }
 }

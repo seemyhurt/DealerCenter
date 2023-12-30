@@ -4,7 +4,7 @@
 
 QStringList LoginDialog::_params = {"Phone number", "Password"};
 
-LoginDialog::LoginDialog(bool enableRegister, QWidget *pwgt) : IInputDialogBase(_params, pwgt)
+LoginDialog::LoginDialog(bool enableRegister, QWidget *pwgt) : IInputDialogBase(_params, "Authorization", pwgt)
 {
     if (!enableRegister)
         return;

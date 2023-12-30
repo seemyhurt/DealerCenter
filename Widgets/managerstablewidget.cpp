@@ -86,11 +86,16 @@ void ManagersTableWidget::handleNeedAddManager()
     delete dialog;
 
     manager.type = "Manager";
+    if (!manager.isValid())
+    {
+        QMessageBox::warning(this, "Error", "Wrong user data!");
+        return;
+    }
     auto managerDbdata = manager.toDBMap();
 
     if (_usersService->isUserExist(manager.phoneNumber))
     {
-        QMessageBox::warning(nullptr, "Error", "User with that number already exists!");
+        QMessageBox::warning(this, "Error", "User with that number already exists!");
         return;
     }
 
@@ -100,5 +105,5 @@ void ManagersTableWidget::handleNeedAddManager()
         return;
     }
 
-    QMessageBox::warning(nullptr, "Error", "Incorrect manager data");
+    QMessageBox::warning(this, "Error", "Incorrect manager data");
 }

@@ -12,7 +12,10 @@ class IInputDialogBase : public QDialog
     Q_OBJECT
 
 public:
-    IInputDialogBase(const QStringList &params, QWidget *pwgt = nullptr);
+    IInputDialogBase(const QStringList &params,
+                     const QString &dialogName,
+                     QWidget *pwgt = nullptr);
+
     ~IInputDialogBase();
 
 protected:

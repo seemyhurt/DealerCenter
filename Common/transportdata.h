@@ -16,8 +16,7 @@ struct TransportData
     int year;               ///< Год выпуска
     int count;              ///< Количество
     QString condition;      ///< Состояние транспорта
-    bool inStock;           ///< Сейчас в наличии
-    quint64 receiptDate;    ///< Дата поступления
+    quint64 receiptDate = 0;///< Дата поступления
     QString manufacturer;   ///< Поставщик
 
     QVariantMap toDBMap() const
@@ -28,7 +27,6 @@ struct TransportData
             {"year", year},
             {"count", count},
             {"condition", condition},
-            {"inStock", inStock},
             {"receiptDate", receiptDate},
             {"manufacturer", manufacturer},
         };
@@ -42,7 +40,6 @@ struct TransportData
         temp.year = variant.value("year").toInt();
         temp.count = variant.value("count").toInt();
         temp.condition = variant.value("condition").toString();
-        temp.inStock = variant.value("inStock").toBool();
         temp.receiptDate = variant.value("receiptDate").toLongLong();
         temp.manufacturer = variant.value("manufacturer").toString();
         return temp;
@@ -57,33 +54,71 @@ struct TransportData
             {"Year", year},
             {"Count", count},
             {"Condition", condition},
-            {"Availability", inStock ? "In stock" : "Ordered"},
-            {"Receipt date", QDateTime::fromMSecsSinceEpoch(receiptDate).toString("dd.MM.yyyy")},
+            {"Receipt date", receiptDate == 0 ? "Unavailable" : QDateTime::fromMSecsSinceEpoch(receiptDate).toString("dd.MM.yyyy")},
         };
     }
 
     static QStringList wigdetKeys()
     {
-        return QStringList {"Model", "Year", "Count", "Condition", "Availability", "Receipt date", "Manufacturer"};
+        return QStringList {"Model", "Year", "Count", "Condition", "Receipt date", "Manufacturer"};
     }
 
     static QStringList DBKeys()
     {
-        return QStringList {"id", "model", "year", "count", "condition", "inStock", "receiptDate", "manufacturer"};
+        return QStringList {"id", "model", "year", "count", "condition", "receiptDate", "manufacturer"};
     }
 
     inline bool operator == (const TransportData & other)
     {
-        return model == other.model &&
+        bool res =  model == other.model &&
                condition == other.condition &&
                year == other.year &&
-               manufacturer == other.manufacturer &&
-               QDateTime::fromMSecsSinceEpoch(receiptDate).date() == QDateTime::fromMSecsSinceEpoch(other.receiptDate).date();
+               manufacturer == other.manufacturer;
+
+        if (receiptDate == 0 || other.receiptDate == 0) return res;
+
+        return res && QDateTime::fromMSecsSinceEpoch(receiptDate).date() == QDateTime::fromMSecsSinceEpoch(other.receiptDate).date();
     }
 
     inline bool operator != (const TransportData & other)
     {
         return !this->operator==(other);
+    }
+
+    inline bool isValid()
+    {
+        static const int MaxStringSize = 30;
+        if (model.isEmpty() ||
+            condition.isEmpty() ||
+            manufacturer.isEmpty())
+        {
+            return false;
+        }
+
+        if (model.size() > MaxStringSize ||
+            condition.size() > MaxStringSize ||
+            manufacturer.size() > MaxStringSize)
+        {
+            return false;
+        }
+
+        if (year <= 1997 ||
+            year > QDate::currentDate().year())
+        {
+            return false;
+        }
+
+        if (receiptDate < 0)
+        {
+            return false;
+        }
+
+        if (count < 0 ||
+            count > 999999999)
+        {
+            return false;
+        }
+        return true;
     }
 };
 

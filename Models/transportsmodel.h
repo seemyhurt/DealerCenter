@@ -23,8 +23,6 @@ private slots:
 private:
     QSharedPointer<TransportDBService> _transportService;
     QSharedPointer<ManufacturerDBService> _manufacturerService;
-
-    int _idColumn;
 };
 
 #endif // TRANSPORTSMODEL_H

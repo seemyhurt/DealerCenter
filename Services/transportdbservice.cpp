@@ -95,6 +95,9 @@ bool TransportDBService::modifyTransportData(const TransportData &data)
             continue;
 
         range[i].count -= data.count;
+        if (range[i].count == 0)
+            range[i].receiptDate = 0;
+
         auto map = range[i].toDBMap();
         if (_storage.addEntry(_provider.data(), map, range[i]).type() != QSqlError::NoError)
             return false;
@@ -129,9 +132,8 @@ void TransportDBService::selectDataFromStorage()
     while (it != _storage.elements().end())
     {
         auto copy = it.value();
-        if (QDateTime::fromMSecsSinceEpoch(it->receiptDate).date() <= QDate::currentDate())
+        if (it->receiptDate != 0 && QDateTime::fromMSecsSinceEpoch(it->receiptDate).date() <= QDate::currentDate())
         {
-            copy.inStock = true;
             copy.receiptDate = QDateTime::currentMSecsSinceEpoch();
             auto map = copy.toDBMap();
             _storage.addEntry(_provider.data(), map, copy);
@@ -158,10 +160,7 @@ bool TransportDBService::tryToMergeTransport(const TransportData &data)
     auto key = getTransportKey(data.model, data.manufacturer);
 
      if (!_uniqueTransport.contains(key))
-    {
-        _uniqueTransport[key].push_back(data);
-        return false;
-    }
+        return _uniqueTransport[key].push_back(data), false;
 
     auto & range = _uniqueTransport[key];
     std::pair<int, int> removed = std::make_pair(0, 0);
@@ -171,6 +170,9 @@ bool TransportDBService::tryToMergeTransport(const TransportData &data)
             continue;
 
         range[i].count += data.count;
+        if (range[i].receiptDate == 0)
+            range[i].receiptDate = data.receiptDate;
+
         auto map = range[i].toDBMap();
         if (_storage.addEntry(_provider.data(), map, range[i]).type() != QSqlError::NoError)
             return false;
@@ -181,10 +183,7 @@ bool TransportDBService::tryToMergeTransport(const TransportData &data)
     }
 
     if(removed == std::make_pair(0, 0))
-    {
-        _uniqueTransport[key].push_back(data);
-        return false;
-    }
+        return _uniqueTransport[key].push_back(data), false;
 
     auto purchases = purchasesService->getPurchasesByTransport(removed.first);
 
@@ -195,6 +194,7 @@ bool TransportDBService::tryToMergeTransport(const TransportData &data)
         if (purchasesService->addEntry(map).type() != QSqlError::NoError)
             return false;
     }
+
     return true;
 }
 

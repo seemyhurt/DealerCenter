@@ -6,9 +6,12 @@
 #include <QPushButton>
 #include <QGridLayout>
 
-IInputDialogBase::IInputDialogBase(const QStringList & params, QWidget *pwgt)
+IInputDialogBase::IInputDialogBase(const QStringList & params,
+                                   const QString & dialogName,
+                                   QWidget *pwgt)
     : QDialog(pwgt, Qt::WindowTitleHint | Qt::WindowSystemMenuHint)
 {
+    setWindowTitle(dialogName);
 
     auto size = params.size();
     _inputWidgets.reserve(size);

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(DilerCenter VERSION 0.1 LANGUAGES CXX)
+project(DealerCenter VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -98,21 +98,21 @@ set(PROJECT_HEADERS
     Models/purchasesmodel.h    
 )
 
-add_executable(DilerCenter
+add_executable(${PROJECT_NAME}
     ${PROJECT_HEADERS}
     ${PROJECT_SOURCES}
     resources.qrc
 )
 
-target_link_libraries(DilerCenter PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                                           Qt${QT_VERSION_MAJOR}::Sql)
 
-set_target_properties(DilerCenter PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
 include(GNUInstallDirs)
-install(TARGETS DilerCenter
+install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

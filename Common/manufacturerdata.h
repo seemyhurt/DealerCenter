@@ -92,7 +92,51 @@ struct ManufacturerData
     static QStringList CustomerKeys()
     {
         return QStringList {"Type", "Brand", "Guarantee, years" };
-    }   
+    }
+
+    inline bool isValid()
+    {
+        static const int MaxStringSize = 30;
+        if (name.isEmpty() ||
+            transportBrand.isEmpty() ||
+            type.isEmpty())
+        {
+            return false;
+        }
+
+        if (!name.at(0).isUpper() ||
+            !transportBrand.at(0).isUpper() ||
+            !type.at(0).isUpper())
+        {
+            return false;
+        }
+
+        if (name.size() > MaxStringSize ||
+            transportBrand.size() > MaxStringSize ||
+            transportBrand.size() > MaxStringSize)
+        {
+            return false;
+        }
+
+        if (deliveryTime <= 0 ||
+            deliveryTime > 100)
+        {
+            return false;
+        }
+
+        if (guaranteePeriod <= 0 ||
+            guaranteePeriod > 10)
+        {
+            return false;
+        }
+
+        if (basePrice <= 0 ||
+            basePrice > 999999999)
+        {
+            return false;
+        }
+        return true;
+    }
 };
 
 #endif // MANUFACTURERDATA_H

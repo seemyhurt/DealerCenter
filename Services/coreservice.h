@@ -14,6 +14,8 @@ public:
     QString appDataPath() const;
     QString userDataPath() const;
 
+    bool isFirtsStart();
+
 private:
     QString _applicationName;
     QString _appDataPath;

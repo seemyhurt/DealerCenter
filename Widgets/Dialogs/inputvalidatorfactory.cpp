@@ -36,4 +36,6 @@ QValidator * InputValidatorFactory::validator(const QString &key, QObject * pare
         return new QRegularExpressionValidator(nameRegExp, parent);
     if (key == QLatin1String("Base price"))
         return new QIntValidator(0, 999999999, parent);
+
+    return {};
 }

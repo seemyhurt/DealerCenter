@@ -2,7 +2,7 @@
 
 QStringList InputUserDialog::_params = {"Phone number", "Last name", "First name", "Patronymic", "Age", "Password"};
 
-InputUserDialog::InputUserDialog(QWidget *pwgt) : IInputDialogBase(_params, pwgt)
+InputUserDialog::InputUserDialog(QWidget *pwgt) : IInputDialogBase(_params, "Registration", pwgt)
 {
 }
 

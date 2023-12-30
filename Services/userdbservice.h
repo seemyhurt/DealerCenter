@@ -8,7 +8,7 @@
 
 class UserDBProvider;
 
-class UserDBService : public DatabaseCommon::ILocalDBServiceBase
+class UserDBService : public ILocalDBServiceBase
 {
     Q_OBJECT
 public:
@@ -31,6 +31,7 @@ public:
     bool isCustomerExist(quint64 number);
     bool isManagerExist(quint64 number);
     bool isUserExist(quint64 number);
+    bool isAdministratorExist(quint64 number = 0);
 
     UserData getUserByNumber(quint64 number);
     UserData getUserById(int id);

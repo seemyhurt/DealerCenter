@@ -58,6 +58,20 @@ bool UserDBService::isUserExist(quint64 number)
     return _phoneToUser.contains(number);
 }
 
+bool UserDBService::isAdministratorExist(quint64 number)
+{
+    if (number != 0)
+        return _phoneToUser.contains(number) &&
+               _phoneToUser[number].type == QLatin1String("Administrator");
+
+    for (const auto &user : qAsConst(_storage.elements()))
+    {
+        if (user.type == QLatin1String("Administrator"))
+            return true;
+    }
+    return false;
+}
+
 UserData UserDBService::getUserByNumber(quint64 number)
 {
     return _phoneToUser.value(number);

@@ -8,7 +8,7 @@
 class TransportDBProvider;
 struct TransportData;
 
-class TransportDBService : public DatabaseCommon::ILocalDBServiceBase
+class TransportDBService : public ILocalDBServiceBase
 {
     Q_OBJECT
 public:
