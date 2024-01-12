@@ -16,7 +16,7 @@ public:
     virtual QValidator *getValidator(const QString &key, QObject *parent) = 0;
 };
 
-class  UserDataValidatorFactory : public InputValidatorFactory
+class UserDataValidatorFactory : public InputValidatorFactory
 {
 public:
     UserDataValidatorFactory();
@@ -32,7 +32,7 @@ public:
     QValidator *getValidator(const QString &key, QObject *parent) override;
 };
 
-class  LoginDataValidatorFactory : public InputValidatorFactory
+class LoginDataValidatorFactory : public InputValidatorFactory
 {
 public:
     LoginDataValidatorFactory();
