@@ -1,10 +1,13 @@
 #include "logindialog.h"
+#include "inputvalidatorfactory.h"
 #include <QPushButton>
 #include <QLayout>
+#include <QSharedPointer>
 
 QStringList LoginDialog::_params = {"Phone number", "Password"};
 
-LoginDialog::LoginDialog(bool enableRegister, QWidget *pwgt) : IInputDialogBase(_params, "Authorization", pwgt)
+LoginDialog::LoginDialog(bool enableRegister, QWidget *pwgt)
+    : IInputDialogBase(_params, "Authorization", QSharedPointer<LoginDataValidatorFactory>::create(), pwgt)
 {
     if (!enableRegister)
         return;

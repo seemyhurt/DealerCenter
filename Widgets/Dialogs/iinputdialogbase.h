@@ -6,6 +6,7 @@
 class QLineEdit;
 class QLabel;
 class QGridLayout;
+class InputValidatorFactory;
 
 class IInputDialogBase : public QDialog
 {
@@ -14,6 +15,7 @@ class IInputDialogBase : public QDialog
 public:
     IInputDialogBase(const QStringList &params,
                      const QString &dialogName,
+                     QSharedPointer<InputValidatorFactory> factory,
                      QWidget *pwgt = nullptr);
 
     ~IInputDialogBase();

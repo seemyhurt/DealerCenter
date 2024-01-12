@@ -102,6 +102,7 @@ add_executable(${PROJECT_NAME}
     ${PROJECT_HEADERS}
     ${PROJECT_SOURCES}
     resources.qrc
+    Widgets/Dialogs/validators.h Widgets/Dialogs/validators.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets

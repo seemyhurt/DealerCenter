@@ -8,6 +8,7 @@
 
 IInputDialogBase::IInputDialogBase(const QStringList & params,
                                    const QString & dialogName,
+                                   QSharedPointer<InputValidatorFactory> factory,
                                    QWidget *pwgt)
     : QDialog(pwgt, Qt::WindowTitleHint | Qt::WindowSystemMenuHint)
 {
@@ -18,7 +19,7 @@ IInputDialogBase::IInputDialogBase(const QStringList & params,
     for (const auto &param : qAsConst(params))
     {
         auto wgt = new QLineEdit(this);
-        wgt->setValidator(InputValidatorFactory::validator(param, this));
+        wgt->setValidator(factory->getValidator(param, this));
         _inputWidgets <<  wgt;
 
         _labels << new QLabel(QString("&%1: ").arg(param), this);

@@ -76,7 +76,6 @@ struct TransportData
                manufacturer == other.manufacturer;
 
         if (receiptDate == 0 || other.receiptDate == 0) return res;
-
         return res && QDateTime::fromMSecsSinceEpoch(receiptDate).date() == QDateTime::fromMSecsSinceEpoch(other.receiptDate).date();
     }
 

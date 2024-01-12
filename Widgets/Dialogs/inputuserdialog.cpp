@@ -1,8 +1,11 @@
 #include "inputuserdialog.h"
+#include "inputvalidatorfactory.h"
+#include <QSharedPointer>
 
 QStringList InputUserDialog::_params = {"Phone number", "Last name", "First name", "Patronymic", "Age", "Password"};
 
-InputUserDialog::InputUserDialog(QWidget *pwgt) : IInputDialogBase(_params, "Registration", pwgt)
+InputUserDialog::InputUserDialog(QWidget *pwgt)
+    : IInputDialogBase(_params, "Registration", QSharedPointer<UserDataValidatorFactory>::create(), pwgt)
 {
 }
 

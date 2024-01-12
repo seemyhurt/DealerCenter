@@ -3,22 +3,41 @@
 
 #include <QString>
 #include <QValidator>
-#include <QSharedPointer>
 
 class  InputValidatorFactory
-{
-    InputValidatorFactory();
-
+{    
 public:
-    ~InputValidatorFactory();
+    InputValidatorFactory();
+    virtual ~InputValidatorFactory() {};
 
     /**
      * @brief Получение наследника QValidator
      */
-    static QValidator *validator(const QString &key, QObject *parent);
+    virtual QValidator *getValidator(const QString &key, QObject *parent) = 0;
+};
 
-private:
-    static InputValidatorFactory _validatorFactory;
+class  UserDataValidatorFactory : public InputValidatorFactory
+{
+public:
+    UserDataValidatorFactory();
+
+    QValidator *getValidator(const QString &key, QObject *parent) override;
+};
+
+class ManufacturerDataValidatorFactory : public InputValidatorFactory
+{
+public:
+    ManufacturerDataValidatorFactory();
+
+    QValidator *getValidator(const QString &key, QObject *parent) override;
+};
+
+class  LoginDataValidatorFactory : public InputValidatorFactory
+{
+public:
+    LoginDataValidatorFactory();
+
+    QValidator *getValidator(const QString &key, QObject *parent) override;
 };
 
 #endif // INPUTVALIDATORFACTORY_H
